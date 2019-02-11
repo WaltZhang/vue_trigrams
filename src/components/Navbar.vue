@@ -11,7 +11,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat class="grey--text" v-if="logged">
+        <v-btn flat class="grey--text" v-if="loggedIn" @click="logout">
           <span>Logout</span>
           <v-icon>exit_to_app</v-icon>
         </v-btn>
@@ -24,7 +24,7 @@
       width="220"
       :mini-variant.sync="miniDrawer"
     >
-      <v-layout column align-center v-if="logged">
+      <v-layout column align-center v-if="loggedIn">
         <v-flex class="mt-5">
           <v-avatar :size="miniDrawer ? 30 : 100">
             <v-img :src="image"></v-img>
@@ -34,7 +34,7 @@
           </p>
         </v-flex>
       </v-layout>
-      <v-layout class="fill-height" tag="v-list" column v-if="logged">
+      <v-layout class="fill-height" tag="v-list" column v-if="loggedIn">
         <v-list>
           <v-list-tile
             v-for="link in links"
@@ -46,9 +46,9 @@
               <v-icon class="white--text">{{ link.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="white--text">{{
-                link.text
-              }}</v-list-tile-title>
+              <v-list-tile-title class="white--text">
+                {{ link.text }}
+              </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -62,7 +62,7 @@ export default {
   data() {
     return {
       links: [
-        { icon: "dashboard", text: "Dashboard", route: "/" },
+        { icon: "home", text: "Home", route: "/" },
         { icon: "folder", text: "My Projects", route: "/projects" },
         { icon: "person", text: "Team", route: "/team" }
       ],
@@ -72,11 +72,26 @@ export default {
         "https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg"
     };
   },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
+    }
+  },
   methods: {
     toggleDrawer() {
       if (this.logged) {
         this.showDrawer = true;
       }
+    },
+    logout() {
+      fetch(this.$store.state.backend_root_url + "/accounts/auth/logout/", {
+        method: "POST",
+        headers: new Headers({
+          Authorization: this.$store.state.token
+        })
+      })
+        .then(() => this.$store.commit("clearToken"))
+        .catch(error => console.error("Logout failed", error));
     }
   }
 };

@@ -43,13 +43,13 @@ export default {
       show1: false,
       valid: false,
       username: "admin",
-      password: "welcome",
+      password: "welcome1",
       error: ""
     };
   },
   methods: {
     login() {
-      fetch("http://localhost:8000/accounts/auth/login/", {
+      fetch(this.$store.state.backend_root_url + "/accounts/auth/login/", {
         method: "POST",
         headers: new Headers({ "Content-Type": "application/json" }),
         body:
@@ -64,7 +64,7 @@ export default {
           switch (jsonData["status"]) {
             case 200:
               this.$store.commit("setToken", { token: jsonData["token"] });
-              this.$router.push;
+              this.$router.push({ name: "home" });
               break;
             default:
               this.error = jsonData["detail"];
