@@ -10,13 +10,22 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-form v-model="valid">
+                <span subheading class="red--text">{{ error }}</span>
                 <v-text-field label="User" v-model="username"></v-text-field>
                 <v-text-field
+                  :type="show1 ? 'text' : 'password'"
                   label="Password"
+                  :append-icon="show1 ? 'visibility_off' : 'visibility'"
                   v-model="password"
+                  @click:append="show1 = !show1"
                 ></v-text-field>
                 <div class="right">
-                  <v-btn class="white--text" color="indigo">Login</v-btn>
+                  <v-btn
+                    class="white--text"
+                    color="indigo"
+                    @click.prevent="login"
+                    >Login</v-btn
+                  >
                 </div>
               </v-form>
             </v-flex>
@@ -31,10 +40,38 @@
 export default {
   data() {
     return {
+      show1: false,
       valid: false,
-      username: "",
-      password: ""
+      username: "admin",
+      password: "welcome",
+      error: ""
     };
+  },
+  methods: {
+    login() {
+      fetch("http://localhost:8000/accounts/auth/login/", {
+        method: "POST",
+        headers: new Headers({ "Content-Type": "application/json" }),
+        body:
+          '{"username": "' +
+          this.username +
+          '", "password": "' +
+          this.password +
+          '"}'
+      })
+        .then(response => response.json())
+        .then(jsonData => {
+          switch (jsonData["status"]) {
+            case 200:
+              this.$store.commit("setToken", { token: jsonData["token"] });
+              this.$router.push;
+              break;
+            default:
+              this.error = jsonData["detail"];
+          }
+        })
+        .catch(error => console.error("Login failed:", error));
+    }
   }
 };
 </script>
