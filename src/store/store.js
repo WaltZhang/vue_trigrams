@@ -20,7 +20,7 @@ export const store = new Vuex.Store({
     },
     clearToken(state) {
       state.token = null;
-      localStorage.setItem("access_token", null);
+      localStorage.removeItem("access_token");
     }
   }
 });

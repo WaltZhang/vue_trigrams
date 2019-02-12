@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height fluid class="my-5">
+  <v-container fluid class="my-5">
     <v-layout justify-center wrap>
       <v-flex xs12 md4 xl3>
         <v-card flat class="pa-3">
@@ -49,15 +49,10 @@ export default {
   },
   methods: {
     login() {
-      fetch(this.$store.state.backend_root_url + "/accounts/auth/login/", {
+      fetch(`${this.$store.state.backend_root_url}/accounts/auth/login/`, {
         method: "POST",
         headers: new Headers({ "Content-Type": "application/json" }),
-        body:
-          '{"username": "' +
-          this.username +
-          '", "password": "' +
-          this.password +
-          '"}'
+        body: `{"username": "${this.username}", "password": "${this.password}"}`
       })
         .then(response => response.json())
         .then(jsonData => {

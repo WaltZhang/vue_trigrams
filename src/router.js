@@ -2,6 +2,9 @@ import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home";
 import Projects from "./views/Projects";
+import Connectors from "./views/Connectors";
+import Drivers from "./views/Drivers";
+import Users from "./views/Users";
 import Login from "./views/Login";
 
 Vue.use(Router);
@@ -19,9 +22,33 @@ export default new Router({
       }
     },
     {
+      path: "/connectors",
+      name: "connectors",
+      component: Connectors,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/drivers",
+      name: "drivers",
+      component: Drivers,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: "/projects",
       name: "projects",
       component: Projects,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/users",
+      name: "users",
+      component: Users,
       meta: {
         requiresAuth: true
       }

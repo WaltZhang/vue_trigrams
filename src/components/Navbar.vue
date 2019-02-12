@@ -63,8 +63,14 @@ export default {
     return {
       links: [
         { icon: "home", text: "Home", route: "/" },
+        {
+          icon: "settings_input_component",
+          text: "My Connectors",
+          route: "/connectors"
+        },
+        { icon: "extension", text: "My Drivers", route: "/drivers" },
         { icon: "folder", text: "My Projects", route: "/projects" },
-        { icon: "person", text: "Team", route: "/team" }
+        { icon: "person", text: "Users", route: "/users" }
       ],
       logged: false,
       miniDrawer: true,
@@ -84,13 +90,16 @@ export default {
       }
     },
     logout() {
-      fetch(this.$store.state.backend_root_url + "/accounts/auth/logout/", {
+      fetch(`${this.$store.state.backend_root_url}/accounts/auth/logout/`, {
         method: "POST",
         headers: new Headers({
-          Authorization: this.$store.state.token
+          Authorization: `token ${this.$store.state.token}`
         })
       })
-        .then(() => this.$store.commit("clearToken"))
+        .then(() => {
+          this.$store.commit("clearToken");
+          this.$router.push({ name: "login" });
+        })
         .catch(error => console.error("Logout failed", error));
     }
   }
