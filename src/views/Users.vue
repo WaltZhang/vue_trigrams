@@ -2,6 +2,9 @@
   <div class="Users">
     <v-container class="my-5">
       <v-layout row wrap>
+        <v-flex class="ma-3" xs12>
+          <user-toolbar></user-toolbar>
+        </v-flex>
         <v-flex xs12 sm6 md4 lg3 v-for="user in users" :key="user.username">
           <v-card class="text-right ma-3">
             <v-layout row pa-3>
@@ -50,6 +53,8 @@
 </template>
 
 <script>
+import UserToolbar from "@/components/UsersToolbar";
+
 export default {
   data() {
     return {
@@ -58,6 +63,9 @@ export default {
   },
   mounted() {
     this.fetchUsers();
+  },
+  components: {
+    "user-toolbar": UserToolbar
   },
   watch: {
     $route: "fetchUsers"
