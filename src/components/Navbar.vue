@@ -34,7 +34,7 @@
           </p>
         </v-flex>
       </v-layout>
-      <v-layout class="fill-height" tag="v-list" column v-if="loggedIn">
+      <v-layout tag="v-list" column v-if="loggedIn">
         <v-list>
           <v-list-tile
             v-for="link in links"
@@ -46,9 +46,9 @@
               <v-icon class="white--text">{{ link.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="white--text">
-                {{ link.text }}
-              </v-list-tile-title>
+              <v-list-tile-title class="white--text">{{
+                link.text
+              }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -75,7 +75,7 @@ export default {
       logged: false,
       miniDrawer: true,
       image:
-        "https://demos.creative-tim.com/vue-material-dashboard/img/sidebar-2.32103624.jpg"
+        "https://visualpharm.com/assets/319/Male%20User-595b40b65ba036ed117d3de6.svg"
     };
   },
   computed: {

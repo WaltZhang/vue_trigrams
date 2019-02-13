@@ -1,21 +1,86 @@
 <template>
   <div class="Users">
-    <h1 class="subheading grey--text">Users</h1>
-    <v-container class="my-">
+    <v-container class="my-5">
       <v-layout row wrap>
-        <v-flex xs12 md4 lg3>
-          <v-card class="text-xs-center ma-3" flat>
-            <v-responsive class="pt-4">
-              image is here
-            </v-responsive>
-            <v-card-text>
-              <div class="subheading"></div>
-              <div class="grey--text"></div>
-            </v-card-text>
-            <v-card-action></v-card-action>
+        <v-flex xs12 sm6 md4 lg3 v-for="user in users" :key="user.username">
+          <v-card class="text-right ma-3">
+            <v-layout row pa-3>
+              <v-flex xs5 mt-3>
+                <v-avatar size="100">
+                  <v-img
+                    src="https://visualpharm.com/assets/319/Male%20User-595b40b65ba036ed117d3de6.svg"
+                  ></v-img>
+                </v-avatar>
+              </v-flex>
+              <v-flex xs7 ml-3>
+                <v-card-title primary-title>
+                  <div class="headline">
+                    <span>{{ user.user.username }}</span>
+                  </div>
+                </v-card-title>
+              </v-flex>
+            </v-layout>
+            <v-layout row>
+              <v-card-text>
+                <div>
+                  <v-icon left>email</v-icon>
+                  <span>{{ user.user.email }}</span>
+                </div>
+                <div>
+                  <v-icon left>contact_phone</v-icon>
+                  <span>{{ user.phone }}</span>
+                </div>
+                <div>
+                  <v-icon left>location_city</v-icon>
+                  <span>{{ user.city }}</span>
+                </div>
+              </v-card-text>
+            </v-layout>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="grey" fab depressed dark>
+                <i class="material-icons orange600">face</i>
+              </v-btn>
+            </v-card-actions>
           </v-card>
         </v-flex>
       </v-layout>
     </v-container>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      users: []
+    };
+  },
+  mounted() {
+    this.fetchUsers();
+  },
+  watch: {
+    $route: "fetchUsers"
+  },
+  methods: {
+    setUsers(users) {
+      this.users = users;
+    },
+    fetchUsers() {
+      fetch(`${this.$store.state.backend_root_url}/accounts/api/v1/`, {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `token ${this.$store.state.token}`
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.setUsers(data);
+          console.log(data);
+        })
+        .catch(error => console.error(error));
+    }
+  }
+};
+</script>
