@@ -29,8 +29,11 @@
           <v-avatar :size="miniDrawer ? 30 : 100">
             <v-img :src="image"></v-img>
           </v-avatar>
-          <p class="white--text subheading mt-1" v-if="!miniDrawer">
-            User name
+          <p
+            class="white--text subheading mt-1 text-xs-center"
+            v-if="!miniDrawer"
+          >
+            {{ username }}
           </p>
         </v-flex>
       </v-layout>
@@ -46,9 +49,9 @@
               <v-icon class="white--text">{{ link.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="white--text">{{
-                link.text
-              }}</v-list-tile-title>
+              <v-list-tile-title class="white--text">
+                {{ link.text }}
+              </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -61,6 +64,7 @@
 export default {
   data() {
     return {
+      username: this.$store.state.username,
       links: [
         { icon: "home", text: "Home", route: "/" },
         {
@@ -97,7 +101,7 @@ export default {
         })
       })
         .then(() => {
-          this.$store.commit("clearToken");
+          this.$store.commit("clearLoggedUser");
           this.$router.push({ name: "login" });
         })
         .catch(error => console.error("Logout failed", error));

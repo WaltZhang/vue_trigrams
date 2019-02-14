@@ -58,7 +58,10 @@ export default {
         .then(jsonData => {
           switch (jsonData["status"]) {
             case 200:
-              this.$store.commit("setToken", { token: jsonData["token"] });
+              this.$store.commit("setLoggedUser", {
+                token: jsonData["token"],
+                username: jsonData["username"]
+              });
               this.$router.push({ name: "home" });
               break;
             default:

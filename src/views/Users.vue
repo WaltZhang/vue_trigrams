@@ -58,7 +58,7 @@ import UserToolbar from "@/components/UsersToolbar";
 export default {
   data() {
     return {
-      users: []
+      //
     };
   },
   mounted() {
@@ -70,24 +70,14 @@ export default {
   watch: {
     $route: "fetchUsers"
   },
+  computed: {
+    users() {
+      return this.$store.state.users;
+    }
+  },
   methods: {
-    setUsers(users) {
-      this.users = users;
-    },
     fetchUsers() {
-      fetch(`${this.$store.state.backend_root_url}/accounts/api/v1/`, {
-        method: "GET",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: `token ${this.$store.state.token}`
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          this.setUsers(data);
-          console.log(data);
-        })
-        .catch(error => console.error(error));
+      this.$store.commit("getUsers");
     }
   }
 };
