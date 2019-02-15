@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else {
-    next(); // 确保一定要调用 next()
+    next();
   }
 });
 

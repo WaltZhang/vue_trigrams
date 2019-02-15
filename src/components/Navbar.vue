@@ -49,9 +49,9 @@
               <v-icon class="white--text">{{ link.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="white--text">
-                {{ link.text }}
-              </v-list-tile-title>
+              <v-list-tile-title class="white--text">{{
+                link.text
+              }}</v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -78,8 +78,7 @@ export default {
       ],
       logged: false,
       miniDrawer: true,
-      image:
-        "https://visualpharm.com/assets/319/Male%20User-595b40b65ba036ed117d3de6.svg"
+      image: "Circled_Male_1.svg"
     };
   },
   computed: {

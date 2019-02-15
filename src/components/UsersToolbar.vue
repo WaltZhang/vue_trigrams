@@ -10,41 +10,43 @@
                 <v-flex xs12>
                   <v-text-field
                     label="User name*"
-                    required
+                    :rules="[rules.required, rules.nameRule]"
                     v-model="username"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field
                     label="Password*"
-                    required
+                    :rules="[rules.required, rules.passwordRule]"
                     v-model="password"
+                    type="password"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field
                     label="Password confirm*"
-                    required
+                    :rules="[rules.required, rules.passwordConfirmRule]"
+                    type="password"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field
                     label="Email*"
-                    required
+                    :rules="[rules.required, rules.emailRule]"
                     v-model="email"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12 sm6>
                   <v-text-field
                     label="Telephone*"
-                    required
+                    :rules="[rules.required]"
                     v-model="phone"
                   ></v-text-field>
                 </v-flex>
                 <v-flex xs12>
                   <v-text-field
                     label="Address*"
-                    required
+                    :rules="[rules.required]"
                     v-model="city"
                   ></v-text-field>
                 </v-flex>
@@ -88,29 +90,38 @@
 export default {
   data() {
     return {
+      rules: {
+        required: v => !!v || "Required",
+        nameRule: v => v.length > 4 || "Name must be more than 4 characters",
+        emailRule: v => /.+@.+/.test(v) || "E-mail address is invalid",
+        passwordRule: v =>
+          v.length >= 8 || "Password must be not less than 8 characters",
+        passwordConfirmRule: v =>
+          v === this.passowrd || "Password and confirmed do not matched"
+      },
       dialog: false,
       fab: false,
-      username: null,
-      password: null,
-      email: null,
+      username: "",
+      password: "",
+      email: "",
       phone: null,
-      city: null
+      city: ""
     };
   },
   methods: {
     openNewUserDlg() {
       this.dialog = true;
     },
-    addUser() {
-      this.$store.commit("addUser", {
+    async addUser() {
+      this.dialog = false;
+      await this.$store.dispatch("addUser", {
         username: this.username,
         password: this.password,
         email: this.email,
         phone: this.phone,
         city: this.city
       });
-      this.dialog = false;
-      this.$store.commit("getUsers");
+      this.$store.dispatch("getUsers");
     }
   }
 };

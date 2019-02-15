@@ -43,7 +43,7 @@ export default {
       show1: false,
       valid: false,
       username: "admin",
-      password: "welcome1",
+      password: "123123",
       error: ""
     };
   },
@@ -68,7 +68,9 @@ export default {
               this.error = jsonData["detail"];
           }
         })
-        .catch(error => console.error("Login failed:", error));
+        .catch(error => {
+          this.error = error;
+        });
     }
   }
 };

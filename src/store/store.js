@@ -29,37 +29,39 @@ export const store = new Vuex.Store({
       state.token = null;
       localStorage.removeItem("access_token");
       localStorage.removeItem("username");
-    },
-    getUsers(state) {
-      fetch(`${state.backend_root_url}/accounts/api/v1/`, {
+    }
+  },
+  actions: {
+    getUsers(context) {
+      fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
         method: "GET",
         headers: new Headers({
           "Content-Type": "application/json",
-          Authorization: `token ${state.token}`
+          Authorization: `token ${context.state.token}`
         })
       })
         .then(response => response.json())
         .then(data => {
-          state.users = data;
+          context.state.users = data;
         })
         .catch(error => console.error(error));
     },
-    addUser(state, payload) {
-      fetch(`${state.backend_root_url}/accounts/api/v1/`, {
+    addUser(context, payload) {
+      fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
         method: "POST",
         headers: new Headers({
           "Content-Type": "application/json",
-          Authorization: `token ${state.token}`
+          Authorization: `token ${context.state.token}`
         }),
         body: `{
-          "user": {
-            "username": "${payload.username}",
-            "password": "${payload.password}",
-            "email": "${payload.email}",
-          },
-          "phone": ${payload.phone},
-          "city": "${payload.city}"
-        }`
+              "user": {
+                "username": "${payload.username}",
+                "password": "${payload.password}",
+                "email": "${payload.email}"
+              },
+              "phone": ${payload.phone},
+              "city": "${payload.city}"
+            }`
       }).catch(error => console.error("User adding failed", error));
     }
   }

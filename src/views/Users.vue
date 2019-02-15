@@ -10,9 +10,7 @@
             <v-layout row pa-3>
               <v-flex xs5 mt-3>
                 <v-avatar size="100">
-                  <v-img
-                    src="https://visualpharm.com/assets/319/Male%20User-595b40b65ba036ed117d3de6.svg"
-                  ></v-img>
+                  <v-img :src="user.avatar"></v-img>
                 </v-avatar>
               </v-flex>
               <v-flex xs7 ml-3>
@@ -41,7 +39,7 @@
             </v-layout>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="grey" fab depressed dark>
+              <v-btn color="grey" fab depressed dark small>
                 <i class="material-icons orange600">face</i>
               </v-btn>
             </v-card-actions>
@@ -67,9 +65,9 @@ export default {
   components: {
     "user-toolbar": UserToolbar
   },
-  watch: {
-    $route: "fetchUsers"
-  },
+  // watch: {
+  //   $route: "fetchUsers"
+  // },
   computed: {
     users() {
       return this.$store.state.users;
@@ -77,7 +75,7 @@ export default {
   },
   methods: {
     fetchUsers() {
-      this.$store.commit("getUsers");
+      this.$store.dispatch("getUsers");
     }
   }
 };
