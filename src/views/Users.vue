@@ -69,7 +69,7 @@ export default {
   //   $route: "fetchUsers"
   // },
   computed: {
-    users() {
+    users: function() {
       return this.$store.state.users;
     }
   },

@@ -49,9 +49,9 @@
               <v-icon class="white--text">{{ link.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="white--text">{{
-                link.text
-              }}</v-list-tile-title>
+              <v-list-tile-title class="white--text">
+                {{ link.text }}
+              </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -64,7 +64,6 @@
 export default {
   data() {
     return {
-      username: this.$store.state.username,
       links: [
         { icon: "home", text: "Home", route: "/" },
         {
@@ -82,6 +81,9 @@ export default {
     };
   },
   computed: {
+    username: function() {
+      return this.$store.state.username;
+    },
     loggedIn() {
       return this.$store.getters.loggedIn;
     }
