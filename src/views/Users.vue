@@ -5,12 +5,16 @@
         <v-flex class="ma-3" xs12>
           <user-toolbar></user-toolbar>
         </v-flex>
-        <v-flex xs12 sm6 md4 lg3 v-for="user in users" :key="user.username">
+        <v-flex xs12 sm6 md4 lg3 v-for="user in users" :key="user.user.id">
           <v-card class="text-right ma-3">
             <v-layout row pa-3>
               <v-flex xs5 mt-3>
                 <v-avatar size="100">
-                  <v-img :src="user.avatar"></v-img>
+                  <v-img :src="user.avatar" v-if="user.user.is_active"></v-img>
+                  <v-img
+                    src="Person_Deactived.svg"
+                    v-if="!user.user.is_active"
+                  ></v-img>
                 </v-avatar>
               </v-flex>
               <v-flex xs7 ml-3>
@@ -39,7 +43,14 @@
             </v-layout>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="grey" fab depressed dark small>
+              <v-btn
+                color="grey"
+                fab
+                depressed
+                dark
+                small
+                @click="toggleUserActive(user.user.id, !user.user.is_active)"
+              >
                 <i class="material-icons orange600">face</i>
               </v-btn>
             </v-card-actions>
@@ -65,9 +76,6 @@ export default {
   components: {
     "user-toolbar": UserToolbar
   },
-  // watch: {
-  //   $route: "fetchUsers"
-  // },
   computed: {
     users: function() {
       return this.$store.state.users;
@@ -76,6 +84,13 @@ export default {
   methods: {
     fetchUsers() {
       this.$store.dispatch("getUsers");
+    },
+    async toggleUserActive(id, active) {
+      await this.$store.dispatch("toggleUserActive", {
+        user_id: id,
+        active: active
+      });
+      this.fetchUsers();
     }
   }
 };

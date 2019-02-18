@@ -25,7 +25,9 @@
                 <v-flex xs12 sm6>
                   <v-text-field
                     label="Password confirm*"
-                    :rules="[rules.required, rules.passwordConfirmRule]"
+                    :rules="[rules.required]"
+                    v-model="passwordConfirm"
+                    :error-messages="emailMatch"
                     type="password"
                   ></v-text-field>
                 </v-flex>
@@ -95,14 +97,13 @@ export default {
         nameRule: v => v.length > 4 || "Name must be more than 4 characters",
         emailRule: v => /.+@.+/.test(v) || "E-mail address is invalid",
         passwordRule: v =>
-          v.length >= 8 || "Password must be not less than 8 characters",
-        passwordConfirmRule: v =>
-          v === this.passowrd || "Password and confirmed do not matched"
+          v.length >= 8 || "Password must be not less than 8 characters"
       },
       dialog: false,
       fab: false,
       username: "",
       password: "",
+      passwordConfirm: "",
       email: "",
       phone: null,
       city: ""
@@ -113,7 +114,6 @@ export default {
       this.dialog = true;
     },
     async addUser() {
-      this.dialog = false;
       await this.$store.dispatch("addUser", {
         username: this.username,
         password: this.password,
@@ -122,6 +122,14 @@ export default {
         city: this.city
       });
       this.$store.dispatch("getUsers");
+      this.dialog = false;
+    }
+  },
+  computed: {
+    emailMatch() {
+      return this.password === this.passwordConfirm
+        ? ""
+        : "Passwords must match";
     }
   }
 };

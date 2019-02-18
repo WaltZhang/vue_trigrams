@@ -8,7 +8,8 @@ export const store = new Vuex.Store({
     backend_root_url: "http://localhost:8000",
     token: localStorage.getItem("access_token") || null,
     username: localStorage.getItem("username") || null,
-    users: []
+    users: [],
+    connectors: []
   },
   getters: {
     loggedIn(state) {
@@ -63,6 +64,37 @@ export const store = new Vuex.Store({
               "city": "${payload.city}"
             }`
       }).catch(error => console.error("User adding failed", error));
+    },
+    toggleUserActive(context, payload) {
+      fetch(
+        `${context.state.backend_root_url}/accounts/api/v1/${
+          payload.user_id
+        }/active/`,
+        {
+          method: "PUT",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: `token ${context.state.token}`
+          }),
+          body: `{
+            "is_active": "${payload.active}"
+          }`
+        }
+      ).catch(error => console.error("User adding failed", error));
+    },
+    getConnectors(context) {
+      fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `token ${context.state.token}`
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          context.state.users = data;
+        })
+        .catch(error => console.error(error));
     }
   }
 });
