@@ -83,18 +83,35 @@ export const store = new Vuex.Store({
       ).catch(error => console.error("User adding failed", error));
     },
     getConnectors(context) {
-      fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
+      fetch(`${context.state.backend_root_url}/connectors/api/v1/`, {
         method: "GET",
         headers: new Headers({
-          "Content-Type": "application/json",
           Authorization: `token ${context.state.token}`
         })
       })
         .then(response => response.json())
         .then(data => {
-          context.state.users = data;
+          context.state.connectors = data;
         })
         .catch(error => console.error(error));
+    },
+    addConnector(context, payload) {
+      fetch(`${context.state.backend_root_url}/connectors/api/v1/`, {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `token ${context.state.token}`
+        }),
+        body: `{
+          "connector_name": "${payload.connectorName}",
+          "host": "${payload.host}",
+          "port": "${payload.port}",
+          "username": "${payload.username}",
+          "password": "${payload.password}",
+          "database": "${payload.database}",
+          "database_type": "${payload.database_type}"
+        }`
+      }).catch(error => console.error(error));
     }
   }
 });
