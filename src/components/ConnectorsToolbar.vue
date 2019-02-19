@@ -19,6 +19,7 @@
                     <v-select
                       v-model="database_type"
                       label="Database Type"
+                      :rules="[rules.required]"
                       :items="drivers"
                       item-text="database_type"
                       item-value="id"
@@ -114,7 +115,7 @@ export default {
       })
     })
       .then(response => response.json())
-      .then(items => (this.drivers = items))
+      .then(drivers => (this.drivers = drivers))
       .catch(error => console.error(error));
   },
   methods: {
