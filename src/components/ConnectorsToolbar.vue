@@ -118,6 +118,7 @@ export default {
         password: this.password,
         database_type: this.database_type
       });
+      console.log("Waiting adding connector.");
       this.$store.dispatch("getConnectors");
       this.dialog = false;
     }

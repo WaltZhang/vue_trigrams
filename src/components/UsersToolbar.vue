@@ -122,6 +122,12 @@ export default {
         city: this.city
       });
       this.$store.dispatch("getUsers");
+      this.username = "";
+      this.password = "";
+      this.passwordConfirm = "";
+      this.email = "";
+      this.phone = null;
+      this.city = "";
       this.dialog = false;
     }
   },

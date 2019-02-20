@@ -3,7 +3,7 @@
     <v-toolbar app>
       <v-toolbar-side-icon
         class="grey--text"
-        @click="miniDrawer = !miniDrawer"
+        @click="drawer = !drawer"
       ></v-toolbar-side-icon>
       <v-toolbar-title class="grey--text">
         <span>VUE</span>
@@ -20,19 +20,18 @@
 
     <v-navigation-drawer
       app
+      absolute
+      temporary
       class="warning"
       width="220"
-      :mini-variant.sync="miniDrawer"
+      v-model="drawer"
     >
       <v-layout column align-center v-if="loggedIn">
         <v-flex class="mt-5">
-          <v-avatar :size="miniDrawer ? 30 : 100">
+          <v-avatar size="100">
             <v-img :src="image"></v-img>
           </v-avatar>
-          <p
-            class="white--text subheading mt-1 text-xs-center"
-            v-if="!miniDrawer"
-          >
+          <p class="white--text subheading mt-1 text-xs-center">
             {{ username }}
           </p>
         </v-flex>
@@ -49,9 +48,9 @@
               <v-icon class="white--text">{{ link.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title class="white--text">{{
-                link.text
-              }}</v-list-tile-title>
+              <v-list-tile-title class="white--text">
+                {{ link.text }}
+              </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -76,7 +75,7 @@ export default {
         { icon: "person", text: "Users", route: "/users" }
       ],
       logged: false,
-      miniDrawer: true,
+      drawer: true,
       image: "Circled_Male_1.svg"
     };
   },

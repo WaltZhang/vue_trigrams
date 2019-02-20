@@ -37,7 +37,6 @@ export const store = new Vuex.Store({
       fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
         method: "GET",
         headers: new Headers({
-          "Content-Type": "application/json",
           Authorization: `token ${context.state.token}`
         })
       })
@@ -47,8 +46,8 @@ export const store = new Vuex.Store({
         })
         .catch(error => console.error(error));
     },
-    addUser(context, payload) {
-      fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
+    async addUser(context, payload) {
+      await fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
         method: "POST",
         headers: new Headers({
           "Content-Type": "application/json",
@@ -95,8 +94,8 @@ export const store = new Vuex.Store({
         })
         .catch(error => console.error(error));
     },
-    addConnector(context, payload) {
-      fetch(`${context.state.backend_root_url}/connectors/api/v1/`, {
+    async addConnector(context, payload) {
+      await fetch(`${context.state.backend_root_url}/connectors/api/v1/`, {
         method: "POST",
         headers: new Headers({
           "Content-Type": "application/json",
