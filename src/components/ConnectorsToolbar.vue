@@ -47,6 +47,7 @@
                     <v-text-field
                       label="Password"
                       v-model="password"
+                      type="password"
                     ></v-text-field>
                   </v-flex>
                 </v-layout>
@@ -69,11 +70,12 @@
       <v-speed-dial
         right
         absolute
+        v-model="fab"
         direction="left"
         transition="slide-y-reverse-transition"
       >
-        <v-btn slot="activator" color="blue darken-2" dark fab>
-          <v-icon>face</v-icon>
+        <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
+          <v-icon>settings</v-icon>
           <v-icon>close</v-icon>
         </v-btn>
         <v-btn color="green" dark fab @click="dialog = true">
@@ -89,34 +91,21 @@ export default {
   data() {
     return {
       dialog: false,
+      fab: false,
       rules: {
         required: v => !!v || "Required"
       },
-      drivers: [],
       connector_name: "",
       host: "",
       port: "",
       username: "",
       password: "",
       database: "",
-      database_type: 1
+      database_type: 0
     };
   },
-  computed: {
-    allDrivers: function() {
-      return this.drivers;
-    }
-  },
-  created: function() {
-    fetch(`${this.$store.state.backend_root_url}/drivers/api/v1/`, {
-      method: "GET",
-      headers: new Headers({
-        Authorization: `token ${this.$store.state.token}`
-      })
-    })
-      .then(response => response.json())
-      .then(drivers => (this.drivers = drivers))
-      .catch(error => console.error(error));
+  props: {
+    drivers: Array
   },
   methods: {
     async addConnector() {

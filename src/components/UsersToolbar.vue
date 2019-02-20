@@ -77,7 +77,7 @@
         transition="slide-y-reverse-transition"
       >
         <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
-          <v-icon>face</v-icon>
+          <v-icon>settings</v-icon>
           <v-icon>close</v-icon>
         </v-btn>
         <v-btn color="green" dark fab @click="openNewUserDlg">

@@ -103,9 +103,9 @@ export const store = new Vuex.Store({
           Authorization: `token ${context.state.token}`
         }),
         body: `{
-          "connector_name": "${payload.connectorName}",
+          "connector_name": "${payload.connector_name}",
           "host": "${payload.host}",
-          "port": "${payload.port}",
+          "port": ${payload.port},
           "username": "${payload.username}",
           "password": "${payload.password}",
           "database": "${payload.database}",
