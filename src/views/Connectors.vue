@@ -41,41 +41,43 @@ export default {
     };
   },
   watch: {
-    connectors: function() {
-      this.allConnectors = [];
-      for (let i in this.$store.state.connectors) {
-        this.allConnectors.push({
-          connector_name: this.$store.state.connectors[i].connector_name,
-          host: this.$store.state.connectors[i].host,
-          port: this.$store.state.connectors[i].port,
-          username: this.$store.state.connectors[i].username,
-          database: this.$store.state.connectors[i].datatbase,
+    allConnectors: function() {
+      this.connectors = [];
+      for (let i in this.allConnectors) {
+        this.connectors.push({
+          connector_name: this.allConnectors[i].connector_name,
+          host: this.allConnectors[i].host,
+          port: this.allConnectors[i].port,
+          username: this.allConnectors[i].username,
+          database: this.allConnectors[i].datatbase,
           database_type: this.getDatabaseType(
-            this.$store.state.connectors[i].database_type
+            this.allConnectors[i].database_type
           )
         });
       }
-      return this.allConnectors;
+      return this.connectors;
     }
   },
-  computed: {},
+  computed: {
+    allConnectors() {
+      return this.$store.state.connectors;
+    }
+  },
   methods: {
     getDatabaseType(database_id) {
+      console.log(this.drivers);
       for (let i in this.drivers) {
         if (this.drivers[i].id === database_id) {
           return this.drivers[i].database_type;
         }
       }
-    },
-    async getConnectors() {
-      await this.$store.dispatch("getConnectors");
     }
-  },
-  components: {
-    "connector-toolbar": ConnectorToolbar
+    // async getConnectors() {
+    //   await this.$store.dispatch("getConnectors");
+    // }
   },
   async created() {
-    await this.getConnectors();
+    await this.$store.dispatch("getConnectors");
     await fetch(`${this.$store.state.backend_root_url}/drivers/api/v1/`, {
       method: "GET",
       headers: new Headers({
@@ -85,6 +87,9 @@ export default {
       .then(response => response.json())
       .then(drivers => (this.drivers = drivers))
       .catch(error => console.error(error));
+  },
+  components: {
+    "connector-toolbar": ConnectorToolbar
   }
 };
 </script>
