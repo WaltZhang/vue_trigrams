@@ -62,7 +62,7 @@
               >Cancel</v-btn
             >
             <v-btn color="green darken-1" flat="flat" @click="addUser"
-              >Create</v-btn
+              >OK</v-btn
             >
           </v-card-actions>
         </v-card>

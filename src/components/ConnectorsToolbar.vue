@@ -4,7 +4,12 @@
       <v-flex xs12>
         <v-dialog v-model="dialog" persistent max-width="600px">
           <v-card>
-            <v-card-title class="headline">New Connector</v-card-title>
+            <v-card-title class="headline" v-if="connector.id === null"
+              >New Connector</v-card-title
+            >
+            <v-card-title class="headline" v-if="connector.id !== null"
+              >Edit Connector</v-card-title
+            >
             <v-card-text>
               <v-container grid-list-md>
                 <v-layout wrap>
@@ -12,12 +17,12 @@
                     <v-text-field
                       label="Connector name*"
                       :rules="[rules.required]"
-                      v-model="connector_name"
+                      v-model="connector.connector_name"
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs12 md6>
                     <v-select
-                      v-model="database_type"
+                      v-model="connector.database_type"
                       label="Database Type"
                       :rules="[rules.required]"
                       :items="drivers"
@@ -26,27 +31,33 @@
                     ></v-select>
                   </v-flex>
                   <v-flex class="xs12 md4">
-                    <v-text-field label="Host" v-model="host"></v-text-field>
+                    <v-text-field
+                      label="Host"
+                      v-model="connector.host"
+                    ></v-text-field>
                   </v-flex>
                   <v-flex class="xs12 md4">
-                    <v-text-field label="Port" v-model="port"></v-text-field>
+                    <v-text-field
+                      label="Port"
+                      v-model="connector.port"
+                    ></v-text-field>
                   </v-flex>
                   <v-flex class="xs12 md4">
                     <v-text-field
                       label="Database"
-                      v-model="database"
+                      v-model="connector.database"
                     ></v-text-field>
                   </v-flex>
                   <v-flex class="xs12 md6">
                     <v-text-field
                       label="User"
-                      v-model="username"
+                      v-model="connector.username"
                     ></v-text-field>
                   </v-flex>
                   <v-flex class="xs12 md6">
                     <v-text-field
                       label="Password"
-                      v-model="password"
+                      v-model="connector.password"
                       type="password"
                     ></v-text-field>
                   </v-flex>
@@ -54,12 +65,16 @@
               </v-container>
             </v-card-text>
             <v-card-actions>
+              <v-btn color="warning draken-1" flat>Test Connector</v-btn>
               <v-spacer></v-spacer>
-              <v-btn color="green darken-1" flat="flat" @click="dialog = false"
+              <v-btn
+                color="green darken-1"
+                flat
+                @click="`${$emit('show-connector-dlg', false)}`"
                 >Cancel</v-btn
               >
-              <v-btn color="green darken-1" flat="flat" @click="addConnector"
-                >Create</v-btn
+              <v-btn color="green darken-1" flat @click="addOrUpdateConnector"
+                >OK</v-btn
               >
             </v-card-actions>
           </v-card>
@@ -78,7 +93,12 @@
           <v-icon>settings</v-icon>
           <v-icon>close</v-icon>
         </v-btn>
-        <v-btn color="green" dark fab @click="dialog = true">
+        <v-btn
+          color="green"
+          dark
+          fab
+          @click="`${$emit('show-connector-dlg', true)}`"
+        >
           <v-icon>add</v-icon>
         </v-btn>
       </v-speed-dial>
@@ -90,37 +110,48 @@
 export default {
   data() {
     return {
-      dialog: false,
       fab: false,
       rules: {
         required: v => !!v || "Required"
-      },
-      connector_name: "",
-      host: "",
-      port: "",
-      username: "",
-      password: "",
-      database: "",
-      database_type: 0
+      }
     };
   },
   props: {
-    drivers: Array
+    dialog: Boolean,
+    drivers: Array,
+    connector: Object
+  },
+  watch: {
+    showDlg: function() {
+      return this.dialog;
+    }
   },
   methods: {
-    async addConnector() {
-      await this.$store.dispatch("addConnector", {
-        connector_name: this.connector_name,
-        host: this.host,
-        port: this.port,
-        database: this.database,
-        username: this.username,
-        password: this.password,
-        database_type: this.database_type
-      });
-      console.log("Waiting adding connector.");
+    async addOrUpdateConnector() {
+      if (this.connector.id !== null) {
+        await this.$store.dispatch("updateConnector", {
+          id: this.connector.id,
+          connector_name: this.connector.connector_name,
+          host: this.connector.host,
+          port: this.connector.port,
+          database: this.connector.database,
+          username: this.connector.username,
+          password: this.connector.password,
+          database_type: this.connector.database_type
+        });
+      } else {
+        await this.$store.dispatch("addConnector", {
+          connector_name: this.connector.connector_name,
+          host: this.connector.host,
+          port: this.connector.port,
+          database: this.connector.database,
+          username: this.connector.username,
+          password: this.connector.password,
+          database_type: this.connector.database_type
+        });
+      }
       this.$store.dispatch("getConnectors");
-      this.dialog = false;
+      this.$emit("show-connector-dlg", false);
     }
   }
 };
