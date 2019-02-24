@@ -22,14 +22,14 @@
         </v-flex>
         <v-flex xs12 md6>
           <div class="caption grey--text">URL</div>
-          <span
-            >{{ connector.username }}@{{ connector.host }}:{{
+          <span>
+            {{ connector.username }}@{{ connector.host }}:{{
               connector.port
-            }}/{{ connector.database }}</span
-          >
+            }}/{{ connector.database }}
+          </span>
         </v-flex>
         <v-flex xs2 sm2 md2>
-          <div class="caption grey--text">Edit</div>
+          <!-- <div class="caption grey--text">Edit</div> -->
           <div>
             <v-btn
               class="primary darken-1"
@@ -74,6 +74,7 @@
           </div>
         </v-flex>
       </v-layout>
+      <v-divider></v-divider>
     </v-card>
   </v-container>
 </template>

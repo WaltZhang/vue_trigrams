@@ -65,7 +65,9 @@
               </v-container>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="warning draken-1" flat>Test Connector</v-btn>
+              <v-btn color="warning draken-1" flat @click="testConnector"
+                >Test Connector</v-btn
+              >
               <v-spacer></v-spacer>
               <v-btn
                 color="green darken-1"
@@ -152,6 +154,21 @@ export default {
       }
       this.$store.dispatch("getConnectors");
       this.$emit("show-connector-dlg", false);
+    },
+    async testConnector() {
+      await fetch(
+        `${this.$store.state.backend_root_url}/connectors/api/v1/test/`,
+        {
+          method: "POST",
+          header: new Headers({
+            "Content-Type": "application/json",
+            Authorization: `token ${this.$store.state.token}`
+          }),
+          body: `{
+          "url": ""
+        }`
+        }
+      );
     }
   }
 };
