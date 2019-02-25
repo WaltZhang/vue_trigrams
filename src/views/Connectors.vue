@@ -160,17 +160,25 @@ export default {
           this.instance.database = this.allConnectors[i].database;
           this.instance.database_type = this.allConnectors[i].database_type;
         }
-        this.showDlg(true);
+        this.showConnector = true;
       }
     },
     showDlg(show) {
+      this.instance.connector_name = null;
+      this.instance.host = "";
+      this.instance.port = null;
+      this.instance.username = "";
+      this.instance.password = "";
+      this.instance.database = "";
+      this.instance.database_type = null;
       this.showConnector = show;
     },
     async deleteConnector(id) {
-      await this.$store.dispatch("deleteConnector", {
-        id: id
-      });
-      this.$store.dispatch("getConnectors");
+      console.log(id);
+      // await this.$store.dispatch("deleteConnector", {
+      //   id: id
+      // });
+      // this.$store.dispatch("getConnectors");
       this.showDelete = false;
     }
   },
