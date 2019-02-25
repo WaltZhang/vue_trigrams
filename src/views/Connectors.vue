@@ -45,7 +45,7 @@
               depressed
               fab
               small
-              @click="showDelete = true"
+              @click="deleteConfirm(`${connector.id}`)"
             >
               <v-icon>delete</v-icon>
               <v-dialog v-model="showDelete" max-width="200">
@@ -61,10 +61,7 @@
                       @click="showDelete = false"
                       >No</v-btn
                     >
-                    <v-btn
-                      color="green darken-1"
-                      flat
-                      @click="deleteConnector(`${connector.id}`)"
+                    <v-btn color="green darken-1" flat @click="deleteConnector"
                       >Yes</v-btn
                     >
                   </v-card-actions>
@@ -87,6 +84,7 @@ export default {
     return {
       showConnector: false,
       showDelete: false,
+      toDeletedId: null,
       instance: {
         id: null,
         connector_name: "",
@@ -101,7 +99,7 @@ export default {
     };
   },
   watch: {
-    allConnectors: function() {
+    allConnectors() {
       this.connectors = [];
       for (let i in this.allConnectors) {
         this.connectors.push({
@@ -118,7 +116,7 @@ export default {
       }
       return this.connectors;
     },
-    drivers: function() {
+    drivers() {
       this.connectors = [];
       for (let i in this.allConnectors) {
         this.connectors.push({
@@ -173,13 +171,16 @@ export default {
       this.instance.database_type = null;
       this.showConnector = show;
     },
-    async deleteConnector(id) {
-      console.log(id);
-      // await this.$store.dispatch("deleteConnector", {
-      //   id: id
-      // });
-      // this.$store.dispatch("getConnectors");
+    async deleteConnector() {
+      await this.$store.dispatch("deleteConnector", {
+        id: this.toDeletedId
+      });
+      this.$store.dispatch("getConnectors");
       this.showDelete = false;
+    },
+    deleteConfirm(id) {
+      this.toDeletedId = id;
+      this.showDelete = true;
     }
   },
   created() {
