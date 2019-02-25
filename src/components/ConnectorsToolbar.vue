@@ -10,6 +10,14 @@
             <v-card-title class="headline" v-if="connector.id !== null"
               >Edit Connector</v-card-title
             >
+            <v-card-title class="subhead" v-if="connectorTested">
+              <span class="green--text" v-if="testResult"
+                >Connector check OK</span
+              >
+              <span class="red--text" v-if="!testResult"
+                >Connector check failed</span
+              >
+            </v-card-title>
             <v-card-text>
               <v-container grid-list-md>
                 <v-layout wrap>
@@ -113,6 +121,8 @@ export default {
   data() {
     return {
       fab: false,
+      connectorTested: false,
+      testResult: null,
       rules: {
         required: v => !!v || "Required"
       }
@@ -156,19 +166,49 @@ export default {
       this.$emit("show-connector-dlg", false);
     },
     async testConnector() {
-      await fetch(
-        `${this.$store.state.backend_root_url}/connectors/api/v1/test/`,
-        {
-          method: "POST",
-          header: new Headers({
-            "Content-Type": "application/json",
-            Authorization: `token ${this.$store.state.token}`
-          }),
-          body: `{
-          "url": ""
-        }`
+      let url = "";
+      let theme = this.getDatabaseTheme(this.connector.database_type);
+      if (this.connector.host) {
+        if (this.connector.username)
+          url = `${theme}://${this.connector.username}:${
+            this.connector.password
+          }@${this.connector.host}:${this.connector.port}/${
+            this.connector.database
+          }`;
+        else
+          url = `${theme}://${this.connector.username}:${
+            this.connector.password
+          }@${this.connector.host}:${this.port}/${this.connector.database}`;
+      } else {
+        url = `${theme}:///${this.connector.database}`;
+      }
+      await fetch(`${this.$store.state.backend_root_url}/connectors/test/`, {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `token ${this.$store.state.token}`
+        }),
+        body: `{
+            "url": "${url}"
+          }`
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status == 200) {
+            this.testResult = "Connector tested Successfully";
+          } else {
+            this.testResult = "Connector tested failed";
+          }
+        })
+        .catch(error => console.error(error));
+      this.connectorTested = true;
+    },
+    getDatabaseTheme(id) {
+      for (let i in this.drivers) {
+        if (this.drivers[i].id == id) {
+          return this.drivers[i].database_theme;
         }
-      );
+      }
     }
   }
 };

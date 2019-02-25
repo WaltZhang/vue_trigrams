@@ -127,7 +127,7 @@ export default {
           host: this.allConnectors[i].host,
           port: this.allConnectors[i].port,
           username: this.allConnectors[i].username,
-          database: this.allConnectors[i].datatbase,
+          database: this.allConnectors[i].database,
           database_type: this.getDatabaseType(
             this.allConnectors[i].database_type
           )

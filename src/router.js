@@ -1,9 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home";
+import Datasets from "./views/Datasets";
 import Projects from "./views/Projects";
 import Connectors from "./views/Connectors";
-import Drivers from "./views/Drivers";
 import Users from "./views/Users";
 import Login from "./views/Login";
 
@@ -15,8 +14,8 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "home",
-      component: Home,
+      name: "datasets",
+      component: Datasets,
       meta: {
         requiresAuth: true
       }
@@ -25,14 +24,6 @@ export default new Router({
       path: "/connectors",
       name: "connectors",
       component: Connectors,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: "/drivers",
-      name: "drivers",
-      component: Drivers,
       meta: {
         requiresAuth: true
       }

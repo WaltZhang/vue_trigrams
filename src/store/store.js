@@ -9,7 +9,8 @@ export const store = new Vuex.Store({
     token: localStorage.getItem("access_token") || null,
     username: localStorage.getItem("username") || null,
     users: [],
-    connectors: []
+    connectors: [],
+    datasets: []
   },
   getters: {
     loggedIn(state) {
@@ -122,14 +123,14 @@ export const store = new Vuex.Store({
             Authorization: `token ${context.state.token}`
           }),
           body: `{
-          "connector_name": "${payload.connector_name}",
-          "host": "${payload.host}",
-          "port": ${payload.port},
-          "username": "${payload.username}",
-          "password": "${payload.password}",
-          "database": "${payload.database}",
-          "database_type": "${payload.database_type}"
-        }`
+            "connector_name": "${payload.connector_name}",
+            "host": "${payload.host}",
+            "port": ${payload.port},
+            "username": "${payload.username}",
+            "password": "${payload.password}",
+            "database": "${payload.database}",
+            "database_type": "${payload.database_type}"
+          }`
         }
       ).catch(error => console.error(error));
     },
