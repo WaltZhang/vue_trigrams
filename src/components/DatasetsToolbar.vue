@@ -15,32 +15,8 @@
             <v-stepper-step step="3">Preview</v-stepper-step>
           </v-stepper-header>
           <v-stepper-items>
-            <v-stepper-content step="1">
-              <v-card>
-                <v-card-text>
-                  <v-layout
-                    row
-                    wrap
-                    v-for="connector in connectors"
-                    :key="connector.id"
-                  >
-                    <v-flex xs62 sm4 md2>
-                      <div class="caption grey--text">Title</div>
-                      <span>{{ connector.connector_name }}</span>
-                    </v-flex>
-                  </v-layout>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="green darken-1" flat @click="dialog = false"
-                    >Cancel</v-btn
-                  >
-                  <v-btn color="green darken-1" flat @click="dialog = false"
-                    >OK</v-btn
-                  >
-                </v-card-actions>
-              </v-card>
-            </v-stepper-content>
+            <connector-selector :step.sync="step"></connector-selector>
+            <connector-query :step.sync="step"></connector-query>
           </v-stepper-items>
         </v-stepper>
       </v-dialog>
@@ -66,6 +42,9 @@
 </template>
 
 <script>
+import ConnectorSelector from "@/components/StepConnectorSelector";
+import ConnectorQuery from "@/components/StepConnectorQuery";
+
 export default {
   data() {
     return {
@@ -76,8 +55,14 @@ export default {
       dataset: null
     };
   },
-  async mounted() {
-    await this.$store.dispatch("getConnectors");
+  components: {
+    "connector-selector": ConnectorSelector,
+    "connector-query": ConnectorQuery
+  },
+  methods: {
+    updateStep() {
+      console.log(this.$event);
+    }
   }
 };
 </script>

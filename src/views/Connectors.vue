@@ -162,6 +162,7 @@ export default {
       }
     },
     showDlg(show) {
+      this.instance.id = null;
       this.instance.connector_name = null;
       this.instance.host = "";
       this.instance.port = null;
