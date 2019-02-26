@@ -15,8 +15,14 @@
             <v-stepper-step step="3">Preview</v-stepper-step>
           </v-stepper-header>
           <v-stepper-items>
-            <connector-selector :step.sync="step"></connector-selector>
-            <connector-query :step.sync="step"></connector-query>
+            <v-stepper-content step="1">
+              <connector-selector
+                @update-step="updateStep"
+              ></connector-selector>
+            </v-stepper-content>
+            <v-stepper-content step="2">
+              <connector-query @update-step="updateStep"></connector-query>
+            </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
       </v-dialog>
@@ -61,7 +67,7 @@ export default {
   },
   methods: {
     updateStep() {
-      console.log(this.$event);
+      this.step += 1;
     }
   }
 };
