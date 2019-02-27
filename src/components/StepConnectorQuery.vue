@@ -2,7 +2,14 @@
   <v-card>
     <v-card-text>
       <v-layout row wrap>
-        <v-flex xs6 sm4 md2></v-flex>
+        <v-flex xs12>
+          <v-text-field label="Query SQL"></v-text-field>
+        </v-flex>
+        <v-flex xs12>
+          <v-data-table>
+            <template slot="items"></template>
+          </v-data-table>
+        </v-flex>
       </v-layout>
     </v-card-text>
     <v-card-actions>

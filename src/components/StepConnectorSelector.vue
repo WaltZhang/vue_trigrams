@@ -1,20 +1,20 @@
 <template>
   <v-card>
-    <v-radio-group :value="selectedConnector">
-      <v-data-table :headers="headers" :items="connectors">
-        <template slot="items" slot-scope="props">
-          <td>{{ props.item.connector_name }}</td>
-          <td>{{ props.item.url }}</td>
-          <td>
+    <v-data-table :headers="headers" :items="connectors">
+      <template slot="items" slot-scope="props">
+        <td>{{ props.item.connector_name }}</td>
+        <td>{{ props.item.url }}</td>
+        <td>
+          <v-radio-group :value="selectedConnector">
             <v-radio
               :key="props.item.id"
               :value="props.item.id"
               @change="`${$emit('select-connector', props.item.id)}`"
             ></v-radio>
-          </td>
-        </template>
-      </v-data-table>
-    </v-radio-group>
+          </v-radio-group>
+        </td>
+      </template>
+    </v-data-table>
     <v-card-actions>
       <v-btn color="warning" flat @click="`${$emit('close-add-data-set-dlg')}`"
         >Cancel</v-btn
@@ -54,8 +54,7 @@ export default {
         {
           sortable: false
         }
-      ],
-      allConnectors: this.$store.state.connectors
+      ]
     };
   },
   computed: {
