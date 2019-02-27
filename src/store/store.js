@@ -83,7 +83,7 @@ export const store = new Vuex.Store({
       ).catch(error => console.error("User adding failed", error));
     },
     getConnectors(context) {
-      fetch(`${context.state.backend_root_url}/connectors/api/v1/`, {
+      fetch(`${context.state.backend_root_url}/connectors/compact/api/v1/`, {
         method: "GET",
         headers: new Headers({
           Authorization: `token ${context.state.token}`
@@ -109,7 +109,7 @@ export const store = new Vuex.Store({
           "username": "${payload.username}",
           "password": "${payload.password}",
           "database": "${payload.database}",
-          "database_type": "${payload.database_type}"
+          "database_type_id": ${payload.database_type_id}
         }`
       }).catch(error => console.error(error));
     },
@@ -129,7 +129,7 @@ export const store = new Vuex.Store({
             "username": "${payload.username}",
             "password": "${payload.password}",
             "database": "${payload.database}",
-            "database_type": "${payload.database_type}"
+            "database_type_id": "${payload.database_type_id}"
           }`
         }
       ).catch(error => console.error(error));

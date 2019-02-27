@@ -30,7 +30,7 @@
                   </v-flex>
                   <v-flex xs12 md6>
                     <v-select
-                      v-model="connector.database_type"
+                      v-model="connector.database_type_id"
                       label="Database Type"
                       :rules="[rules.required]"
                       :items="drivers"
@@ -80,7 +80,10 @@
               <v-btn
                 color="green darken-1"
                 flat
-                @click="`${$emit('show-connector-dlg', false)}`"
+                @click="
+                  connectorTested = false;
+                  `${$emit('show-connector-dlg', false)}`;
+                "
                 >Cancel</v-btn
               >
               <v-btn color="green darken-1" flat @click="addOrUpdateConnector"
@@ -91,28 +94,6 @@
         </v-dialog>
       </v-flex>
     </v-layout>
-    <v-card>
-      <v-speed-dial
-        right
-        absolute
-        v-model="fab"
-        direction="left"
-        transition="slide-y-reverse-transition"
-      >
-        <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
-          <v-icon>settings</v-icon>
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-btn
-          color="green"
-          dark
-          fab
-          @click="`${$emit('show-connector-dlg', true)}`"
-        >
-          <v-icon>add</v-icon>
-        </v-btn>
-      </v-speed-dial>
-    </v-card>
   </div>
 </template>
 
@@ -120,9 +101,8 @@
 export default {
   data() {
     return {
-      fab: false,
       connectorTested: false,
-      testResult: null,
+      testResult: false,
       rules: {
         required: v => !!v || "Required"
       }
@@ -132,11 +112,6 @@ export default {
     dialog: Boolean,
     drivers: Array,
     connector: Object
-  },
-  watch: {
-    showDlg: function() {
-      return this.dialog;
-    }
   },
   methods: {
     async addOrUpdateConnector() {
@@ -149,7 +124,7 @@ export default {
           database: this.connector.database,
           username: this.connector.username,
           password: this.connector.password,
-          database_type: this.connector.database_type
+          database_type_id: this.connector.database_type_id
         });
       } else {
         await this.$store.dispatch("addConnector", {
@@ -159,15 +134,16 @@ export default {
           database: this.connector.database,
           username: this.connector.username,
           password: this.connector.password,
-          database_type: this.connector.database_type
+          database_type_id: this.connector.database_type_id
         });
       }
       this.$store.dispatch("getConnectors");
+      this.connectorTested = false;
       this.$emit("show-connector-dlg", false);
     },
     async testConnector() {
       let url = "";
-      let theme = this.getDatabaseTheme(this.connector.database_type);
+      let theme = this.getDatabaseTheme(this.connector.database_type_id);
       if (this.connector.host) {
         if (this.connector.username)
           url = `${theme}://${this.connector.username}:${
@@ -195,9 +171,9 @@ export default {
         .then(response => response.json())
         .then(data => {
           if (data.status == 200) {
-            this.testResult = "Connector tested Successfully";
+            this.testResult = true;
           } else {
-            this.testResult = "Connector tested failed";
+            this.testResult = false;
           }
         })
         .catch(error => console.error(error));

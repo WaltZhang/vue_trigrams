@@ -1,7 +1,7 @@
 <template>
   <v-layout row justify-center>
     <v-flex xs12>
-      <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-dialog v-model="show" persistent max-width="1030px">
         <v-stepper v-model="step">
           <v-stepper-header>
             <v-stepper-step step="1" :complete="step > 1"
@@ -17,33 +17,23 @@
           <v-stepper-items>
             <v-stepper-content step="1">
               <connector-selector
-                @update-step="updateStep"
+                :selectedConnector="selectedConnectorId"
+                @select-connector="selectConnector"
+                @step-by-step="stepByStep"
+                @close-add-data-set-dlg="closeAddDataSetDlg"
               ></connector-selector>
             </v-stepper-content>
             <v-stepper-content step="2">
-              <connector-query @update-step="updateStep"></connector-query>
+              <connector-query
+                :selectedConnector="selectedConnectorId"
+                @step-by-step="stepByStep"
+                @close-add-data-set-dlg="closeAddDataSetDlg"
+              ></connector-query>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
       </v-dialog>
     </v-flex>
-    <v-card>
-      <v-speed-dial
-        right
-        absolute
-        v-model="fab"
-        direction="left"
-        transition="slide-y-reverse-transition"
-      >
-        <v-btn slot="activator" v-model="fab" color="blue darken-2" dark fab>
-          <v-icon>settings</v-icon>
-          <v-icon>close</v-icon>
-        </v-btn>
-        <v-btn color="green" dark fab @click="dialog = true">
-          <v-icon>add</v-icon>
-        </v-btn>
-      </v-speed-dial>
-    </v-card>
   </v-layout>
 </template>
 
@@ -52,12 +42,14 @@ import ConnectorSelector from "@/components/StepConnectorSelector";
 import ConnectorQuery from "@/components/StepConnectorQuery";
 
 export default {
+  props: {
+    show: Boolean
+  },
   data() {
     return {
       step: 1,
-      dialog: false,
-      fab: false,
       connectors: this.$store.state.connectors,
+      selectedConnectorId: null,
       dataset: null
     };
   },
@@ -66,8 +58,17 @@ export default {
     "connector-query": ConnectorQuery
   },
   methods: {
-    updateStep() {
-      this.step += 1;
+    selectConnector(id) {
+      this.selectedConnectorId = id;
+    },
+    closeAddDataSetDlg() {
+      this.step = 1;
+      this.selectedConnectorId = null;
+      this.$emit("show-data-set", false);
+    },
+    stepByStep(step) {
+      this.step += step;
+      if (this.step < 1) this.step = 1;
     }
   }
 };

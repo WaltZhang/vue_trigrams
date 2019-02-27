@@ -2,7 +2,33 @@
   <v-container>
     <v-layout row wrap class="my-5">
       <v-flex class="ma-3" xs12>
-        <dataset-toolbar></dataset-toolbar>
+        <data-set-editor
+          :show="dlgShow"
+          @show-data-set="showDataSet"
+        ></data-set-editor>
+        <v-card>
+          <v-speed-dial
+            right
+            absolute
+            v-model="fab"
+            direction="left"
+            transition="slide-y-reverse-transition"
+          >
+            <v-btn
+              slot="activator"
+              v-model="fab"
+              color="blue darken-2"
+              dark
+              fab
+            >
+              <v-icon>settings</v-icon>
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-btn color="green" dark fab @click="addDataSet">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-speed-dial>
+        </v-card>
       </v-flex>
     </v-layout>
     <v-layout row wrap class="my-5">
@@ -13,16 +39,30 @@
 </template>
 
 <script>
-import DatasetToolbar from "@/components/DatasetsToolbar";
+import DataSetEditor from "@/components/DataSetEditor";
 
 export default {
   data() {
     return {
-      datasets: this.$store.state.datasets
+      fab: false,
+      dlgShow: false
     };
   },
+  computed: {
+    datasets() {
+      return this.$store.state.datasets;
+    }
+  },
   components: {
-    "dataset-toolbar": DatasetToolbar
+    "data-set-editor": DataSetEditor
+  },
+  methods: {
+    addDataSet() {
+      this.showDataSet(true);
+    },
+    showDataSet(show) {
+      this.dlgShow = show;
+    }
   }
 };
 </script>

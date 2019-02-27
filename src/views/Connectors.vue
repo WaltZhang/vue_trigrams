@@ -2,34 +2,56 @@
   <v-container>
     <v-layout row wrap class="my-5">
       <v-flex class="ma-3" xs12>
-        <connector-toolbar
+        <connector-editor
           :drivers="drivers"
           :connector="instance"
           :dialog="showConnector"
           @show-connector-dlg="showDlg"
-        ></connector-toolbar>
+        ></connector-editor>
+        <v-card>
+          <v-speed-dial
+            right
+            absolute
+            v-model="fab"
+            direction="left"
+            transition="slide-y-reverse-transition"
+          >
+            <v-btn
+              slot="activator"
+              v-model="fab"
+              color="blue darken-2"
+              dark
+              fab
+            >
+              <v-icon>settings</v-icon>
+              <v-icon>close</v-icon>
+            </v-btn>
+            <v-btn color="green" dark fab @click="addConnector">
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-speed-dial>
+        </v-card>
       </v-flex>
     </v-layout>
     <v-card flat v-for="connector in connectors" :key="connector.id">
-      <v-layout row wrap :class="`pa-3 connector ${connector.database_type}`">
-        <v-flex xs62 sm4 md2>
+      <v-layout
+        row
+        wrap
+        :class="`pa-3 connector ${connector.database_type_id}`"
+      >
+        <v-flex xs2 sm4 md2>
           <div class="caption grey--text">Title</div>
           <span>{{ connector.connector_name }}</span>
         </v-flex>
         <v-flex xs6 sm6 md2>
           <div class="caption grey--text">Database</div>
-          <span>{{ connector.database_type }}</span>
+          <span>{{ connector.database }}</span>
         </v-flex>
         <v-flex xs12 md6>
           <div class="caption grey--text">URL</div>
-          <span>
-            {{ connector.username }}@{{ connector.host }}:{{
-              connector.port
-            }}/{{ connector.database }}
-          </span>
+          <span>{{ connector.url }}</span>
         </v-flex>
         <v-flex xs2 sm2 md2>
-          <!-- <div class="caption grey--text">Edit</div> -->
           <div>
             <v-btn
               class="primary darken-1"
@@ -77,11 +99,12 @@
 </template>
 
 <script>
-import ConnectorToolbar from "@/components/ConnectorsToolbar";
+import ConnectorEditor from "@/components/ConnectorEditor";
 
 export default {
   data() {
     return {
+      fab: false,
       showConnector: false,
       showDelete: false,
       toDeletedId: null,
@@ -92,76 +115,18 @@ export default {
         port: null,
         username: "",
         database: "",
-        database_type: 0
+        database_type_id: 0
       },
-      drivers: [],
-      connectors: []
+      drivers: []
     };
   },
-  watch: {
-    allConnectors() {
-      this.connectors = [];
-      for (let i in this.allConnectors) {
-        this.connectors.push({
-          id: this.allConnectors[i].id,
-          connector_name: this.allConnectors[i].connector_name,
-          host: this.allConnectors[i].host,
-          port: this.allConnectors[i].port,
-          username: this.allConnectors[i].username,
-          database: this.allConnectors[i].database,
-          database_type: this.getDatabaseType(
-            this.allConnectors[i].database_type
-          )
-        });
-      }
-      return this.connectors;
-    },
-    drivers() {
-      this.connectors = [];
-      for (let i in this.allConnectors) {
-        this.connectors.push({
-          id: this.allConnectors[i].id,
-          connector_name: this.allConnectors[i].connector_name,
-          host: this.allConnectors[i].host,
-          port: this.allConnectors[i].port,
-          username: this.allConnectors[i].username,
-          database: this.allConnectors[i].database,
-          database_type: this.getDatabaseType(
-            this.allConnectors[i].database_type
-          )
-        });
-      }
-      return this.connectors;
-    }
-  },
   computed: {
-    allConnectors() {
+    connectors() {
       return this.$store.state.connectors;
     }
   },
   methods: {
-    getDatabaseType(database_id) {
-      for (let i in this.drivers) {
-        if (this.drivers[i].id === database_id) {
-          return this.drivers[i].database_type;
-        }
-      }
-    },
-    editConnector(id) {
-      for (let i in this.allConnectors) {
-        if (this.allConnectors[i].id == id) {
-          this.instance.id = id;
-          this.instance.connector_name = this.allConnectors[i].connector_name;
-          this.instance.host = this.allConnectors[i].host;
-          this.instance.port = this.allConnectors[i].port;
-          this.instance.username = this.allConnectors[i].username;
-          this.instance.database = this.allConnectors[i].database;
-          this.instance.database_type = this.allConnectors[i].database_type;
-        }
-        this.showConnector = true;
-      }
-    },
-    showDlg(show) {
+    addConnector() {
       this.instance.id = null;
       this.instance.connector_name = null;
       this.instance.host = "";
@@ -169,7 +134,27 @@ export default {
       this.instance.username = "";
       this.instance.password = "";
       this.instance.database = "";
-      this.instance.database_type = null;
+      this.instance.database_type_id = null;
+      this.showDlg(true);
+    },
+    async editConnector(id) {
+      await fetch(
+        `${this.$store.state.backend_root_url}/connectors/api/v1/${id}`,
+        {
+          method: "GET",
+          headers: new Headers({
+            Authorization: `token ${this.$store.state.token}`
+          })
+        }
+      )
+        .then(response => response.json())
+        .then(data => {
+          this.instance = data;
+        })
+        .catch(error => console.error(error));
+      this.showDlg(true);
+    },
+    showDlg(show) {
       this.showConnector = show;
     },
     async deleteConnector() {
@@ -199,7 +184,7 @@ export default {
       .catch(error => console.error(error));
   },
   components: {
-    "connector-toolbar": ConnectorToolbar
+    "connector-editor": ConnectorEditor
   }
 };
 </script>
