@@ -69,7 +69,7 @@ export default {
       this.$emit("update-step");
     },
     fetchSample() {
-      fetch(`${this.$store.state.backend_root_url}/datasets/database/query/`, {
+      fetch(`${this.$store.state.backend_root_url}/datasets/api/v1/create/`, {
         method: "POST",
         headers: new Headers({
           "Content-Type": "application/json",
@@ -82,9 +82,34 @@ export default {
       })
         .then(response => response.json())
         .then(data => {
-          let metadata = data["detail"]["metadata"];
-          console.log(metadata);
-          this.columns = Object.keys(metadata);
+          console.log(data);
+          if (data.status == 201) {
+            let dataSetName = data.detail.data_set_name;
+            console.log(
+              `${
+                this.$store.state.backend_root_url
+              }/datasets/api/v1/${dataSetName}/metadata/`
+            );
+            fetch(
+              `${
+                this.$store.state.backend_root_url
+              }/datasets/api/v1/${dataSetName}/metadata/`,
+              {
+                method: "GET",
+                headers: new Headers({
+                  Authorization: `token ${this.$store.state.token}`
+                })
+              }
+            )
+              .then(response => response.json())
+              .then(data => {
+                console.log(data);
+                let metadataString = data["detail"]["metadata"];
+                console.log(metadataString);
+                let metadata = JSON.parse(metadataString);
+                this.columns = Object.keys(metadata);
+              });
+          }
         })
         .catch(error => console.error(error));
     }
