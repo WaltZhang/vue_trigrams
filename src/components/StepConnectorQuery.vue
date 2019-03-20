@@ -12,8 +12,14 @@
         <v-flex xs12>
           <v-data-table :headers="titles" :items="content">
             <template slot="items" slot-scope="props">
-              <td>{{ props.item.connector_id }}</td>
-              <td>{{ props.item.query }}</td>
+              <td>{{ props.item.id }}</td>
+              <td>{{ props.item.insert_time }}</td>
+              <td>{{ props.item.update_time }}</td>
+              <td>{{ props.item.delete_flag }}</td>
+              <td>{{ props.item.operate_id }}</td>
+              <td>{{ props.item.parent_id }}</td>
+              <td>{{ props.item.role_name }}</td>
+              <td>{{ props.item.tree_level }}</td>
             </template>
           </v-data-table>
         </v-flex>
@@ -47,21 +53,23 @@ export default {
     return {
       query_sql: "",
       columns: [],
-      content: []
+      rows: []
     };
   },
   computed: {
     titles() {
       let headers = [];
-      for (let i in this.columns) {
+      for (let column of this.columns) {
         headers.push({
-          text: this.columns[i],
+          text: column,
           sortable: false,
-          value: this.columns[i]
+          value: column
         });
       }
-      console.log(headers);
       return headers;
+    },
+    content() {
+      return this.rows;
     }
   },
   methods: {
@@ -81,16 +89,10 @@ export default {
           }`
       })
         .then(response => response.json())
-        .then(data => {
-          console.log(data);
+        .then(async data => {
           if (data.status == 201) {
             let dataSetName = data.detail.data_set_name;
-            console.log(
-              `${
-                this.$store.state.backend_root_url
-              }/datasets/api/v1/${dataSetName}/metadata/`
-            );
-            fetch(
+            await fetch(
               `${
                 this.$store.state.backend_root_url
               }/datasets/api/v1/${dataSetName}/metadata/`,
@@ -103,11 +105,31 @@ export default {
             )
               .then(response => response.json())
               .then(data => {
-                console.log(data);
                 let metadataString = data["detail"]["metadata"];
-                console.log(metadataString);
                 let metadata = JSON.parse(metadataString);
                 this.columns = Object.keys(metadata);
+              });
+            fetch(
+              `${
+                this.$store.state.backend_root_url
+              }/datasets/api/v1/${dataSetName}/canonical/`,
+              {
+                method: "GET",
+                headers: new Headers({
+                  Authorization: `token ${this.$store.state.token}`
+                })
+              }
+            )
+              .then(response => response.text())
+              .then(data => {
+                for (let line of data.split("\n")) {
+                  let row = {};
+                  let columns = line.split(",");
+                  for (let i in columns) {
+                    row[this.columns[i]] = columns[i];
+                  }
+                  this.rows.push(row);
+                }
               });
           }
         })
