@@ -11,15 +11,10 @@
         </v-flex>
         <v-flex xs12>
           <v-data-table :headers="titles" :items="content">
-            <template slot="items" slot-scope="props">
-              <td>{{ props.item.id }}</td>
-              <td>{{ props.item.insert_time }}</td>
-              <td>{{ props.item.update_time }}</td>
-              <td>{{ props.item.delete_flag }}</td>
-              <td>{{ props.item.operate_id }}</td>
-              <td>{{ props.item.parent_id }}</td>
-              <td>{{ props.item.role_name }}</td>
-              <td>{{ props.item.tree_level }}</td>
+            <template #items="props">
+              <td v-for="header in titles" :key="header.id">
+                {{ props.item[header.value] }}
+              </td>
             </template>
           </v-data-table>
         </v-flex>
