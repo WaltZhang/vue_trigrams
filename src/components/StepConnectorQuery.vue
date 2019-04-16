@@ -11,6 +11,12 @@
         </v-flex>
         <v-flex xs12>
           <v-data-table :headers="titles" :items="content">
+            <template #headers>
+              <th v-for="title in titles" :key="title.value">
+                {{ title.value }}
+                <v-btn flat fab>...</v-btn>
+              </th>
+            </template>
             <template #items="props">
               <td v-for="header in titles" :key="header.id">
                 {{ props.item[header.value] }}

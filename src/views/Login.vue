@@ -42,8 +42,8 @@ export default {
     return {
       show1: false,
       valid: false,
-      username: "admin",
-      password: "123123",
+      username: "",
+      password: "",
       error: ""
     };
   },
