@@ -12,14 +12,28 @@
         <v-flex xs12>
           <v-data-table :headers="titles" :items="content">
             <template #headers>
-              <th v-for="title in titles" :key="title.value">
-                {{ title.value }}
-                <v-btn flat fab>...</v-btn>
+              <th v-for="title in titles" :key="title.text">
+                <span class="headline">{{ title.text }}</span>
+                <v-menu bottom left>
+                  <template v-slot:activator="{ on }">
+                    <v-btn small icon v-on="on">
+                      <v-icon>more_vert</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-tile
+                      v-for="(item, i) in ['int64', 'object', 'datetime[ns]']"
+                      :key="i"
+                    >
+                      <v-list-tile-title>{{ item }}</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
               </th>
             </template>
             <template #items="props">
-              <td v-for="header in titles" :key="header.id">
-                {{ props.item[header.value] }}
+              <td v-for="title in titles" :key="title.id">
+                {{ props.item[title.text] }}
               </td>
             </template>
           </v-data-table>
@@ -54,7 +68,8 @@ export default {
     return {
       query_sql: "",
       columns: [],
-      rows: []
+      rows: [],
+      metadata: {}
     };
   },
   computed: {
@@ -64,7 +79,7 @@ export default {
         headers.push({
           text: column,
           sortable: false,
-          value: column
+          value: String(this.metadata[column])
         });
       }
       return headers;
@@ -107,8 +122,8 @@ export default {
               .then(response => response.json())
               .then(data => {
                 let metadataString = data["detail"]["metadata"];
-                let metadata = JSON.parse(metadataString);
-                this.columns = Object.keys(metadata);
+                this.metadata = JSON.parse(metadataString);
+                this.columns = Object.keys(this.metadata);
               });
             fetch(
               `${
