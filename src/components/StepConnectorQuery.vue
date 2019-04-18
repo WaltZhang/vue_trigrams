@@ -85,6 +85,18 @@ export default {
       return headers;
     },
     content() {
+      for (let row of this.rows) {
+        for (let column of this.columns) {
+          // console.log(row[column] + ": " + this.metadata[column]);
+          if (this.metadata[column].includes("int")) {
+            row[column] = new String(parseInt(row[column]));
+          } else if (this.metadata[column].includes("float")) {
+            row[column] = new String(parseFloat(row[column]));
+          } else if (this.metadata[column].includes("datetime")) {
+            row[column] = new String(new Date(row[column]));
+          }
+        }
+      }
       return this.rows;
     }
   },
@@ -124,6 +136,7 @@ export default {
                 let metadataString = data["detail"]["metadata"];
                 this.metadata = JSON.parse(metadataString);
                 this.columns = Object.keys(this.metadata);
+                console.log(this.metadata);
               });
             fetch(
               `${
@@ -141,8 +154,9 @@ export default {
                 for (let line of data.split("\n")) {
                   let row = {};
                   let columns = line.split(",");
+                  let headers = Object.keys(this.metadata);
                   for (let i in columns) {
-                    row[this.columns[i]] = columns[i];
+                    row[headers[i]] = columns[i];
                   }
                   this.rows.push(row);
                 }
