@@ -12,7 +12,7 @@
         <v-flex xs12>
           <v-data-table :headers="titles" :items="content">
             <template #headers>
-              <th v-for="title in titles" :key="title.text">
+              <th v-for="title in titles" :key="title.pk">
                 <span class="headline">{{ title.text }}</span>
                 <v-menu bottom left>
                   <template v-slot:activator="{ on }">
@@ -22,7 +22,7 @@
                   </template>
                   <v-list>
                     <v-list-tile
-                      v-for="(item, i) in ['int64', 'object', 'datetime[ns]']"
+                      v-for="(item, i) in ['int', 'float', 'string', 'date']"
                       :key="i"
                     >
                       <v-list-tile-title>{{ item }}</v-list-tile-title>
@@ -32,7 +32,7 @@
               </th>
             </template>
             <template #items="props">
-              <td v-for="title in titles" :key="title.id">
+              <td v-for="title in titles" :key="title.pk">
                 {{ props.item[title.text] }}
               </td>
             </template>
@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       query_sql: "",
-      columns: [],
+      // columns: [],
       rows: [],
       metadata: {}
     };
@@ -75,7 +75,7 @@ export default {
   computed: {
     titles() {
       let headers = [];
-      for (let column of this.columns) {
+      for (let column of Object.keys(this.metadata)) {
         headers.push({
           text: column,
           sortable: false,
@@ -85,18 +85,21 @@ export default {
       return headers;
     },
     content() {
+      let pk = 0;
       for (let row of this.rows) {
-        for (let column of this.columns) {
+        for (let column of Object.keys(this.metadata)) {
           // console.log(row[column] + ": " + this.metadata[column]);
           if (this.metadata[column].includes("int")) {
-            row[column] = new String(parseInt(row[column]));
+            row[column] = parseInt(row[column]);
           } else if (this.metadata[column].includes("float")) {
-            row[column] = new String(parseFloat(row[column]));
+            row[column] = parseFloat(row[column]);
           } else if (this.metadata[column].includes("datetime")) {
-            row[column] = new String(new Date(row[column]));
+            row[column] = new Date(row[column]);
           }
         }
+        row["pk"] = pk++;
       }
+      console.log(this.rows);
       return this.rows;
     }
   },
@@ -135,8 +138,7 @@ export default {
               .then(data => {
                 let metadataString = data["detail"]["metadata"];
                 this.metadata = JSON.parse(metadataString);
-                this.columns = Object.keys(this.metadata);
-                console.log(this.metadata);
+                this.metadata["pk"] = "int64";
               });
             fetch(
               `${
@@ -151,6 +153,9 @@ export default {
             )
               .then(response => response.text())
               .then(data => {
+                if (data.slice(-1) === "\n") {
+                  data = data.substring(0, data.length - 2);
+                }
                 for (let line of data.split("\n")) {
                   let row = {};
                   let columns = line.split(",");
