@@ -4,10 +4,17 @@
       <v-layout row wrap>
         <v-flex xs12>
           <v-text-field
-            label="Query SQL"
-            v-model="query_sql"
-            @keypress.enter="fetchSample"
+            label="data set name"
+            v-model="datasetName"
           ></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex xs10>
+          <v-textarea label="Query SQL" v-model="querySql"></v-textarea>
+        </v-flex>
+        <v-flex xs2>
+          <v-btn dark small @click="fetchSample"><span>Query</span></v-btn>
         </v-flex>
         <v-flex xs12>
           <v-data-table :headers="titles" :items="content">
@@ -24,6 +31,7 @@
                     <v-list-tile
                       v-for="(item, i) in ['int', 'float', 'string', 'date']"
                       :key="i"
+                      @click="changeDataType(title.text, item)"
                     >
                       <v-list-tile-title>{{ item }}</v-list-tile-title>
                     </v-list-tile>
@@ -66,8 +74,8 @@ export default {
   },
   data() {
     return {
-      query_sql: "",
-      // columns: [],
+      datasetName: "",
+      querySql: "",
       rows: [],
       metadata: {}
     };
@@ -85,22 +93,23 @@ export default {
       return headers;
     },
     content() {
-      let pk = 0;
+      let displayRows = [];
       for (let row of this.rows) {
+        let displayRow = {};
         for (let column of Object.keys(this.metadata)) {
-          // console.log(row[column] + ": " + this.metadata[column]);
           if (this.metadata[column].includes("int")) {
-            row[column] = parseInt(row[column]);
+            displayRow[column] = parseInt(row[column]);
           } else if (this.metadata[column].includes("float")) {
-            row[column] = parseFloat(row[column]);
-          } else if (this.metadata[column].includes("datetime")) {
-            row[column] = new Date(row[column]);
+            displayRow[column] = parseFloat(row[column]);
+          } else if (this.metadata[column].includes("date")) {
+            displayRow[column] = new Date(row[column]);
+          } else {
+            displayRow[column] = new String(row[column]);
           }
         }
-        row["pk"] = pk++;
+        displayRows.push(displayRow);
       }
-      console.log(this.rows);
-      return this.rows;
+      return displayRows;
     }
   },
   methods: {
@@ -108,6 +117,7 @@ export default {
       this.$emit("update-step");
     },
     fetchSample() {
+      let querySql = this.querySql.replace("/\n/gi", "");
       fetch(`${this.$store.state.backend_root_url}/datasets/api/v1/create/`, {
         method: "POST",
         headers: new Headers({
@@ -116,17 +126,17 @@ export default {
         }),
         body: `{
             "connector_id": ${this.selectedConnector},
-            "query_sql": "${this.query_sql}"
+            "query_sql": "${querySql}"
           }`
       })
         .then(response => response.json())
         .then(async data => {
           if (data.status == 201) {
-            let dataSetName = data.detail.data_set_name;
+            this.dataSetName = data.detail.data_set_name;
             await fetch(
-              `${
-                this.$store.state.backend_root_url
-              }/datasets/api/v1/${dataSetName}/metadata/`,
+              `${this.$store.state.backend_root_url}/datasets/api/v1/${
+                this.dataSetName
+              }/metadata/`,
               {
                 method: "GET",
                 headers: new Headers({
@@ -138,12 +148,11 @@ export default {
               .then(data => {
                 let metadataString = data["detail"]["metadata"];
                 this.metadata = JSON.parse(metadataString);
-                this.metadata["pk"] = "int64";
               });
             fetch(
-              `${
-                this.$store.state.backend_root_url
-              }/datasets/api/v1/${dataSetName}/canonical/`,
+              `${this.$store.state.backend_root_url}/datasets/api/v1/${
+                this.dataSetName
+              }/canonical/`,
               {
                 method: "GET",
                 headers: new Headers({
@@ -156,6 +165,7 @@ export default {
                 if (data.slice(-1) === "\n") {
                   data = data.substring(0, data.length - 2);
                 }
+                this.rows = [];
                 for (let line of data.split("\n")) {
                   let row = {};
                   let columns = line.split(",");
@@ -167,6 +177,31 @@ export default {
                 }
               });
           }
+        })
+        .catch(error => console.error(error));
+    },
+    changeDataType(title, type) {
+      this.metadata[title] = type;
+      let metadata = JSON.stringify(this.metadata).replace(/"/gi, '\\"');
+      fetch(
+        `${this.$store.state.backend_root_url}/datasets/api/v1/${
+          this.dataSetName
+        }/metadata/update/`,
+        {
+          method: "PUT",
+          headers: new Headers({
+            "Content-Type": "application/json",
+            Authorization: `token ${this.$store.state.token}`
+          }),
+          body: `{
+            "metadata": "${metadata}"
+          }`
+        }
+      )
+        .then(response => response.json())
+        .then(data => {
+          let metadataString = data["metadata"];
+          this.metadata = JSON.parse(metadataString);
         })
         .catch(error => console.error(error));
     }
