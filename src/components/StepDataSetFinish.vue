@@ -2,12 +2,11 @@
   <v-card>
     <v-card-text>
       <v-layout row wrap>
-        <v-flex xs10>
+        <v-flex xs12>
           <v-text-field
             label="data set name"
-            v-model="dataSetName"
+            v-model="displayName"
           ></v-text-field>
-          <v-btn small dark>Create</v-btn>
         </v-flex>
       </v-layout>
     </v-card-text>
@@ -23,7 +22,7 @@
         color="green"
         depressed
         @click="finishDataSet"
-        :disabled="dataSetName === null"
+        :disabled="displayName === null || displayName === ''"
       >
         Finish
       </v-btn>
@@ -33,19 +32,24 @@
 
 <script>
 export default {
+  data() {
+    return {
+      displayName: null
+    };
+  },
   props: {
     dataSetName: String
   },
-  method: {
-    finishDataSet() {
-      this.finalizedDataSet();
+  methods: {
+    async finishDataSet() {
+      await this.finalizedDataSet();
       this.$emit("close-add-data-set-dlg");
     },
-    finalizedDataSet() {
+    async finalizedDataSet() {
       fetch(
         `${this.$store.state.backend_root_url}/datasets/api/v1/${
           this.dataSetName
-        }/`,
+        }/finalize/`,
         {
           method: "PUT",
           headers: new Headers({
@@ -53,7 +57,7 @@ export default {
             Authorization: `token ${this.$store.state.token}`
           }),
           body: `{
-            "display_name": "${this.dataSetName}"
+            "display_name": "${this.displayName}"
           }`
         }
       ).catch(error => console.error(error));

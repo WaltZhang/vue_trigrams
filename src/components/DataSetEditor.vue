@@ -28,6 +28,7 @@
               <data-set-query
                 :selectedConnector="selectedConnectorId"
                 @step-by-step="stepByStep"
+                @update-data-set-name="updateDataSetName"
                 @close-add-data-set-dlg="closeAddDataSetDlg"
               >
               </data-set-query>
@@ -99,6 +100,10 @@ export default {
     stepByStep(step) {
       this.step += step;
       if (this.step < 1) this.step = 1;
+    },
+    updateDataSetName(dataSetName) {
+      this.dataSetName = dataSetName;
+      console.log(this.dataSetName);
     }
   }
 };

@@ -2,14 +2,6 @@
   <v-card>
     <v-card-text>
       <v-layout row wrap>
-        <v-flex xs12>
-          <v-text-field
-            label="data set name"
-            v-model="dataSetName"
-          ></v-text-field>
-        </v-flex>
-      </v-layout>
-      <v-layout row wrap>
         <v-flex xs10>
           <v-textarea label="Query SQL" v-model="querySql"></v-textarea>
         </v-flex>
@@ -59,7 +51,7 @@
       <v-btn
         color="green"
         depressed
-        @click="`${$emit('step-by-step', 1)}`"
+        @click="nextPage"
         :disabled="selectedConnector === null"
       >
         Next
@@ -205,6 +197,10 @@ export default {
           this.metadata = JSON.parse(metadataString);
         })
         .catch(error => console.error(error));
+    },
+    nextPage() {
+      this.$emit("update-data-set-name", this.dataSetName);
+      this.$emit("step-by-step", 1);
     }
   }
 };
