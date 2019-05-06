@@ -61,6 +61,14 @@ export default {
           }`
         }
       ).catch(error => console.error(error));
+    },
+    previousPage() {
+      this.displayName = null;
+      this.$emit("step-by-step", -1);
+    },
+    cancelDlg() {
+      this.displayName = null;
+      this.$emit("close-add-data-set-dlg");
     }
   }
 };

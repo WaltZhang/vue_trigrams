@@ -41,11 +41,11 @@
       </v-layout>
     </v-card-text>
     <v-card-actions>
-      <v-btn color="warning" flat @click="`${$emit('close-add-data-set-dlg')}`">
+      <v-btn color="warning" flat @click="cancelDlg">
         Cancel
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn color="green" flat @click="`${$emit('step-by-step', -1)}`">
+      <v-btn color="green" flat @click="previousPage">
         Back
       </v-btn>
       <v-btn
@@ -179,7 +179,7 @@ export default {
       fetch(
         `${this.$store.state.backend_root_url}/datasets/api/v1/${
           this.dataSetName
-        }/metadata/update/`,
+        }/metadata/`,
         {
           method: "PUT",
           headers: new Headers({
@@ -201,6 +201,20 @@ export default {
     nextPage() {
       this.$emit("update-data-set-name", this.dataSetName);
       this.$emit("step-by-step", 1);
+    },
+    previousPage() {
+      this.dataSetName = null;
+      this.querySql = null;
+      this.rows = [];
+      this.metadata = {};
+      this.$emit("step-by-step", -1);
+    },
+    cancelDlg() {
+      this.dataSetName = null;
+      this.querySql = null;
+      this.rows = [];
+      this.metadata = {};
+      this.$emit("close-add-data-set-dlg");
     }
   }
 };
