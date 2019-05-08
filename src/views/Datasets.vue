@@ -48,6 +48,11 @@ export default {
       dlgShow: false
     };
   },
+  mounted: {
+    fetchDataSets() {
+      this.$store.dispatch("getDataSets");
+    }
+  },
   computed: {
     datasets() {
       return this.$store.state.datasets;

@@ -144,6 +144,19 @@ export const store = new Vuex.Store({
           })
         }
       ).catch(error => console.error(error));
+    },
+    getDataSets(context) {
+      fetch(`${context.state.backend_root_url}/datasets/api/v1/`, {
+        method: "GET",
+        headers: new Headers({
+          Authorization: `token ${context.state.token}`
+        })
+      })
+        .then(response => response.json())
+        .then(data => {
+          context.state.datasets = data;
+        })
+        .catch(error => console.error(error));
     }
   }
 });
