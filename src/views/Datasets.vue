@@ -42,17 +42,28 @@
         :key="dataset.id"
       >
         <v-card>
-          <v-card-title></v-card-title>
-          <v-card-text>
+          <v-card-title>
+            <i class="material-icons fa4 ">
+              insert_chart
+            </i>
+          </v-card-title>
+          <v-card-text class="headline">
             {{ dataset.display_name }}
           </v-card-text>
+          <v-divider light></v-divider>
           <v-card-actions>
+            <v-icon left>calendar_today</v-icon>
+            <span class="font-weight-thin">
+              Created: {{ dataset.timestamp }}
+            </span>
             <v-spacer></v-spacer>
-            <v-divider light></v-divider>
-            <v-icon left>calendar</v-icon>
-            <span>Created: {{ dataset.timestamp }}</span>
-            <v-spacer></v-spacer>
-            <v-btn depressed small flat>
+            <v-btn
+              small
+              flat
+              icon
+              color="pink"
+              @click="deleteDataSet(`${dataset.id}`)"
+            >
               <v-icon>delete</v-icon>
             </v-btn>
           </v-card-actions>
