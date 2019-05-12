@@ -32,8 +32,32 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap class="my-5">
-      <v-flex class="ma-3" xs12></v-flex>
-      <v-card v-for="dataset in datasets" :key="dataset.id"></v-card>
+      <v-flex
+        class="ma-3"
+        xs12
+        sm6
+        md4
+        xl3
+        v-for="dataset in datasets"
+        :key="dataset.id"
+      >
+        <v-card>
+          <v-card-title></v-card-title>
+          <v-card-text>
+            {{ dataset.display_name }}
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-divider light></v-divider>
+            <v-icon left>calendar</v-icon>
+            <span>Created: {{ dataset.timestamp }}</span>
+            <v-spacer></v-spacer>
+            <v-btn depressed small flat>
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -48,10 +72,8 @@ export default {
       dlgShow: false
     };
   },
-  mounted: {
-    fetchDataSets() {
-      this.$store.dispatch("getDataSets");
-    }
+  mounted() {
+    this.$store.dispatch("getDataSets");
   },
   computed: {
     datasets() {
