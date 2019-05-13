@@ -61,6 +61,7 @@ export default {
           }`
         }
       ).catch(error => console.error(error));
+      this.$store.dispatch("getDataSets");
     },
     previousPage() {
       this.displayName = null;
