@@ -114,13 +114,22 @@ export default {
       this.dialog = true;
     },
     async addUser() {
-      await this.$store.dispatch("addUser", {
-        username: this.username,
-        password: this.password,
-        email: this.email,
-        phone: this.phone,
-        city: this.city
-      });
+      await fetch(`${this.$store.state.backend_root_url}/accounts/api/v1/`, {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Authorization: `token ${this.$store.state.token}`
+        }),
+        body: `{
+              "user": {
+                "username": "${this.username}",
+                "password": "${this.password}",
+                "email": "${this.email}"
+              },
+              "phone": ${this.phone},
+              "city": "${this.city}"
+            }`
+      }).catch(error => console.error("User adding failed", error));
       this.$store.dispatch("getUsers");
       this.username = "";
       this.password = "";

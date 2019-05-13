@@ -47,24 +47,6 @@ export const store = new Vuex.Store({
         })
         .catch(error => console.error(error));
     },
-    async addUser(context, payload) {
-      await fetch(`${context.state.backend_root_url}/accounts/api/v1/`, {
-        method: "POST",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: `token ${context.state.token}`
-        }),
-        body: `{
-              "user": {
-                "username": "${payload.username}",
-                "password": "${payload.password}",
-                "email": "${payload.email}"
-              },
-              "phone": ${payload.phone},
-              "city": "${payload.city}"
-            }`
-      }).catch(error => console.error("User adding failed", error));
-    },
     toggleUserActive(context, payload) {
       fetch(
         `${context.state.backend_root_url}/accounts/api/v1/${
@@ -94,56 +76,6 @@ export const store = new Vuex.Store({
           context.state.connectors = data;
         })
         .catch(error => console.error(error));
-    },
-    async addConnector(context, payload) {
-      await fetch(`${context.state.backend_root_url}/connectors/api/v1/`, {
-        method: "POST",
-        headers: new Headers({
-          "Content-Type": "application/json",
-          Authorization: `token ${context.state.token}`
-        }),
-        body: `{
-          "connector_name": "${payload.connector_name}",
-          "host": "${payload.host}",
-          "port": ${payload.port},
-          "username": "${payload.username}",
-          "password": "${payload.password}",
-          "database": "${payload.database}",
-          "database_type_id": ${payload.database_type_id}
-        }`
-      }).catch(error => console.error(error));
-    },
-    async updateConnector(context, payload) {
-      await fetch(
-        `${context.state.backend_root_url}/connectors/api/v1/${payload.id}/`,
-        {
-          method: "PUT",
-          headers: new Headers({
-            "Content-Type": "application/json",
-            Authorization: `token ${context.state.token}`
-          }),
-          body: `{
-            "connector_name": "${payload.connector_name}",
-            "host": "${payload.host}",
-            "port": ${payload.port},
-            "username": "${payload.username}",
-            "password": "${payload.password}",
-            "database": "${payload.database}",
-            "database_type_id": "${payload.database_type_id}"
-          }`
-        }
-      ).catch(error => console.error(error));
-    },
-    async deleteConnector(context, payload) {
-      await fetch(
-        `${context.state.backend_root_url}/connectors/api/v1/${payload.id}/`,
-        {
-          method: "DELETE",
-          headers: new Headers({
-            Authorization: `token ${context.state.token}`
-          })
-        }
-      ).catch(error => console.error(error));
     },
     getDataSets(context) {
       fetch(`${context.state.backend_root_url}/datasets/api/v1/`, {

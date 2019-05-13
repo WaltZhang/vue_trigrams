@@ -46,7 +46,7 @@ export default {
       this.$emit("close-add-data-set-dlg");
     },
     async finalizedDataSet() {
-      fetch(
+      await fetch(
         `${this.$store.state.backend_root_url}/datasets/api/v1/${
           this.dataSetName
         }/finalize/`,

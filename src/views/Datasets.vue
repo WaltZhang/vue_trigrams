@@ -100,6 +100,18 @@ export default {
     },
     showDataSet(show) {
       this.dlgShow = show;
+    },
+    async deleteDataSet(id) {
+      await fetch(
+        `${this.$store.state.backend_root_url}/datasets/api/v1/${id}/`,
+        {
+          method: "DELETE",
+          headers: new Headers({
+            Authorization: `token ${this.$store.state.token}`
+          })
+        }
+      ).catch(error => console.error(error));
+      this.$store.dispatch("getDataSets");
     }
   }
 };

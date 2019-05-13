@@ -116,26 +116,47 @@ export default {
   methods: {
     async addOrUpdateConnector() {
       if (this.connector.id !== null) {
-        await this.$store.dispatch("updateConnector", {
-          id: this.connector.id,
-          connector_name: this.connector.connector_name,
-          host: this.connector.host,
-          port: this.connector.port,
-          database: this.connector.database,
-          username: this.connector.username,
-          password: this.connector.password,
-          database_type_id: this.connector.database_type_id
-        });
+        await fetch(
+          `${this.$store.state.backend_root_url}/connectors/api/v1/${
+            this.connector.id
+          }/`,
+          {
+            method: "PUT",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: `token ${this.$store.state.token}`
+            }),
+            body: `{
+              "connector_name": "${this.connector.connector_name}",
+              "host": "${this.connector.host}",
+              "port": ${this.connector.port},
+              "username": "${this.connector.username}",
+              "password": "${this.connector.password}",
+              "database": "${this.connector.database}",
+              "database_type_id": "${this.connector.database_type_id}"
+            }`
+          }
+        ).catch(error => console.error(error));
       } else {
-        await this.$store.dispatch("addConnector", {
-          connector_name: this.connector.connector_name,
-          host: this.connector.host,
-          port: this.connector.port,
-          database: this.connector.database,
-          username: this.connector.username,
-          password: this.connector.password,
-          database_type_id: this.connector.database_type_id
-        });
+        await fetch(
+          `${this.$store.state.backend_root_url}/connectors/api/v1/`,
+          {
+            method: "POST",
+            headers: new Headers({
+              "Content-Type": "application/json",
+              Authorization: `token ${this.$store.state.token}`
+            }),
+            body: `{
+            "connector_name": "${this.connector.connector_name}",
+            "host": "${this.connector.host}",
+            "port": ${this.connector.port},
+            "username": "${this.connector.username}",
+            "password": "${this.connector.password}",
+            "database": "${this.connector.database}",
+            "database_type_id": ${this.connector.database_type_id}
+          }`
+          }
+        ).catch(error => console.error(error));
       }
       this.$store.dispatch("getConnectors");
       this.connectorTested = false;
