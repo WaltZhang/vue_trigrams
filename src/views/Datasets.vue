@@ -32,6 +32,22 @@
       </v-flex>
     </v-layout>
     <v-layout row wrap class="my-5">
+      <v-dialog v-model="showDelete" max-width="200">
+        <v-card>
+          <v-card-text>
+            Do you want to delete this data set?
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="green darken-1" flat @click="showDelete = false">
+              No
+            </v-btn>
+            <v-btn color="green darken-1" flat @click="deleteDataSet">
+              Yes
+            </v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-flex
         class="ma-3"
         xs12
@@ -43,9 +59,9 @@
       >
         <v-card>
           <v-card-title>
-            <i class="material-icons fa4 ">
+            <v-icon size="64">
               insert_chart
-            </i>
+            </v-icon>
           </v-card-title>
           <v-card-text class="headline">
             {{ dataset.display_name }}
@@ -66,26 +82,6 @@
             >
               <v-icon>delete</v-icon>
             </v-btn>
-            <v-dialog v-model="showDelete" max-width="200">
-              <v-card>
-                <v-card-text>
-                  Do you want to delete this data set?
-                </v-card-text>
-                <v-card-actions>
-                  <v-btn
-                    color="green darken-1"
-                    flat
-                    @click="showDelete = false"
-                  >
-                    No
-                  </v-btn>
-                  <v-btn color="green darken-1" flat @click="deleteDataSet">
-                    Yes
-                  </v-btn>
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
           </v-card-actions>
         </v-card>
       </v-flex>
