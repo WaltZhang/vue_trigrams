@@ -18,13 +18,7 @@
       </v-toolbar-items>
     </v-toolbar>
 
-    <v-navigation-drawer
-      temporary
-      app
-      class="warning"
-      width="220"
-      v-model="drawer"
-    >
+    <v-navigation-drawer app class="warning" width="220" v-model="drawer">
       <v-layout column align-center v-if="loggedIn">
         <v-flex class="mt-5">
           <v-avatar size="100">
@@ -70,10 +64,11 @@ export default {
           route: "/connectors"
         },
         { icon: "folder", text: "My Projects", route: "/projects" },
-        { icon: "person", text: "Users", route: "/users" }
+        { icon: "person", text: "Users", route: "/users" },
+        { icon: "account_tree", text: "Graph", route: "/graph" }
       ],
       logged: false,
-      drawer: true,
+      drawer: false,
       image: "Circled_Male_1.svg"
     };
   },

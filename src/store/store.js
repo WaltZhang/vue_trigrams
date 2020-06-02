@@ -3,14 +3,19 @@ import Vuex from "vuex";
 
 Vue.use(Vuex);
 
-export const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
     backend_root_url: "http://localhost:8000",
     token: localStorage.getItem("access_token") || null,
     username: localStorage.getItem("username") || null,
     users: [],
     connectors: [],
-    datasets: []
+    datasets: [],
+    nodeId: 1,
+    graph: {
+      nodes: {},
+      edges: {}
+    }
   },
   getters: {
     loggedIn(state) {
@@ -18,6 +23,9 @@ export const store = new Vuex.Store({
     },
     allUsers(state) {
       return state.users;
+    },
+    getNodeId(state) {
+      return state.nodeId;
     }
   },
   mutations: {
@@ -31,6 +39,36 @@ export const store = new Vuex.Store({
       state.token = null;
       localStorage.removeItem("access_token");
       localStorage.removeItem("username");
+    },
+    updateNodeId(state, id) {
+      state.nodeId = id;
+    },
+    addNode(state, node) {
+      Vue.set(state.graph.nodes, state.nodeId++, node);
+    },
+    removeNode(state, id) {
+      Vue.delete(state.graph.nodes, id);
+    },
+    addEdge(state, payload) {
+      Vue.set(state.graph.edges, payload.sourceId, {
+        sourceId: payload.sourceId,
+        targetId: payload.targetId,
+        drawn: payload.drawn
+      });
+    },
+    removeEdge(state, payload) {
+      Vue.delete(state.graph.edges, payload.sourceId);
+    },
+    drawEdge(state, sourceId) {
+      state.graph.edges[sourceId].drawn = true;
+    },
+    addNodeCoordinates(state, payload) {
+      let node = state.graph.nodes[payload.id];
+      node["x"] = payload.x;
+      node["y"] = payload.y;
+    },
+    updateProperties(state, payload) {
+      state.graph.nodes[payload.id]["properties"] = payload.properties;
     }
   },
   actions: {

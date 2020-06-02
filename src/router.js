@@ -5,6 +5,7 @@ import Projects from "./views/Projects";
 import Connectors from "./views/Connectors";
 import Users from "./views/Users";
 import Login from "./views/Login";
+import GraphView from "./views/GraphView";
 
 Vue.use(Router);
 
@@ -50,6 +51,14 @@ export default new Router({
       component: Login,
       meta: {
         requiresVistor: true
+      }
+    },
+    {
+      path: "/graph",
+      name: "graph",
+      component: GraphView,
+      meta: {
+        requiresAuth: true
       }
     }
   ]

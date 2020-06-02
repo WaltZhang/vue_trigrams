@@ -2,7 +2,7 @@
   <v-app>
     <nav-bar></nav-bar>
 
-    <v-content>
+    <v-content class="content">
       <router-view></router-view>
     </v-content>
   </v-app>
@@ -23,3 +23,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.content {
+  height: 100vh;
+}
+</style>
