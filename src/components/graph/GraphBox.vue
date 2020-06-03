@@ -30,31 +30,38 @@ export default {
   components: {
     PropertyBox
   },
-  // created() {
-  //   this.plumb = jsPlumb.getInstance();
-  //   this.plumb.importDefaults({
-  //     Connector: ['Flowchart', {'cornerRadius': 10}],
-  //     Anchors : [ "Right", "Left" ],
-  //     ConnectionOverlays:[['Arrow', { location:1 }]],
-  //   });
+  created() {
+    this.plumb = jsPlumb.getInstance();
+    this.plumb.importDefaults({
+      Connector: ["Flowchart", { cornerRadius: 10 }],
+      Anchors: ["Right", "Left"],
+      ConnectionOverlays: [["Arrow", { location: 1 }]]
+    });
 
-  //   let vm = this
-  //   this.plumb.bind("connection", function (info, originalEvent) {
-  //     vm.$store.commit('addEdge', {sourceId: info.sourceId, targetId: info.targetId, drawn: true})
-  //   });
+    let vm = this;
+    this.plumb.bind("connection", function(info, originalEvent) {
+      vm.$store.commit("addEdge", {
+        sourceId: info.sourceId,
+        targetId: info.targetId,
+        drawn: true
+      });
+    });
 
-  //   this.plumb.bind("connectionMoved", function (info, originalEvent) {
-  //     vm.$store.commit('removeEdge', {sourceId: info.originalSourceId})
-  //     vm.$store.commit('addEdge', {sourceId: info.newSourceId, targetId: info.newTargetId, drawn: true})
-  //   });
+    this.plumb.bind("connectionMoved", function(info, originalEvent) {
+      vm.$store.commit("removeEdge", { sourceId: info.originalSourceId });
+      vm.$store.commit("addEdge", {
+        sourceId: info.newSourceId,
+        targetId: info.newTargetId,
+        drawn: true
+      });
+    });
 
-  //   this.plumb.bind("connectionDetached", function (info, originalEvent) {
-  //     vm.$store.commit('removeEdge', {sourceId: info.sourceId})
-  //   });
-  // },
+    this.plumb.bind("connectionDetached", function(info, originalEvent) {
+      vm.$store.commit("removeEdge", { sourceId: info.sourceId });
+    });
+  },
   computed: {
     nodes() {
-      this.initPlumb();
       let vm = this;
       this.$nextTick(function() {
         vm.plumb.setContainer(document.querySelector(".graph"));
@@ -106,43 +113,13 @@ export default {
     };
   },
   methods: {
-    initPlumb() {
-      this.plumb = jsPlumb.getInstance();
-      this.plumb.importDefaults({
-        Connector: ["Flowchart", { cornerRadius: 10 }],
-        Anchors: ["Right", "Left"],
-        ConnectionOverlays: [["Arrow", { location: 1 }]]
-      });
-
-      let vm = this;
-      this.plumb.bind("connection", function(info, originalEvent) {
-        vm.$store.commit("addEdge", {
-          sourceId: info.sourceId,
-          targetId: info.targetId,
-          drawn: true
-        });
-      });
-
-      this.plumb.bind("connectionMoved", function(info, originalEvent) {
-        vm.$store.commit("removeEdge", { sourceId: info.originalSourceId });
-        vm.$store.commit("addEdge", {
-          sourceId: info.newSourceId,
-          targetId: info.newTargetId,
-          drawn: true
-        });
-      });
-
-      this.plumb.bind("connectionDetached", function(info, originalEvent) {
-        vm.$store.commit("removeEdge", { sourceId: info.sourceId });
-      });
-    },
     saveProps(payload) {
       this.$store.commit("updateProperties", payload);
     },
     remove(id) {
-      console.log(`id: ${id}`);
       this.$nextTick(() => {
         this.plumb.removeAllEndpoints(document.getElementById(id));
+        this.plumb.unmanage(id);
       });
       this.$store.commit("removeNode", id);
     }
