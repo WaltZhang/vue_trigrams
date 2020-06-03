@@ -17,10 +17,9 @@ export default {
   },
   methods: {
     load() {
-      let graphString =
-        '{"nodes":{"1":{"id":1,"title":"Read","inputs":0,"outputs":1,"draggable":false,"boxType":"box1","properties":{"name":""},"x":207,"y":185},"2":{"id":2,"title":"Merge","inputs":2,"outputs":1,"draggable":false,"boxType":"box2","properties":{"leftKey":"","rightKey":"","mergeMethod":""},"x":529,"y":329},"3":{"id":3,"title":"Read","inputs":0,"outputs":1,"draggable":false,"boxType":"box1","properties":{"name":""},"x":444,"y":127},"4":{"id":4,"title":"Merge","inputs":2,"outputs":1,"draggable":false,"boxType":"box2","properties":{"leftKey":"","rightKey":"","mergeMethod":""},"x":662,"y":54},"5":{"id":5,"title":"Write","inputs":1,"outputs":0,"draggable":false,"boxType":"box7","properties":{"name":""},"x":800,"y":329}},"edges":{"1":{"sourceId":"1","targetId":"2","drawn":true},"2":{"sourceId":"2","targetId":"5","drawn":true},"3":{"sourceId":"3","targetId":"4","drawn":true}}}';
+      let graphString = '{"nodes":{"3":{"title":"Read","inputs":0,"outputs":1,"draggable":false,"boxType":"box1","properties":{"name":""},"id":3,"x":158,"y":220},"4":{"title":"Merge","inputs":2,"outputs":1,"draggable":false,"boxType":"box2","properties":{"leftKey":"","rightKey":"","mergeMethod":""},"id":4,"x":396,"y":217},"5":{"title":"Write","inputs":1,"outputs":0,"draggable":false,"boxType":"box7","properties":{"name":""},"id":5,"x":684,"y":304},"7":{"title":"Read","inputs":0,"outputs":1,"draggable":false,"boxType":"box1","properties":{"name":""},"id":7,"x":1001,"y":258},"8":{"title":"Merge","inputs":2,"outputs":1,"draggable":false,"boxType":"box2","properties":{"leftKey":"","rightKey":"","mergeMethod":""},"id":8,"x":1192,"y":34},"9":{"title":"Write","inputs":1,"outputs":0,"draggable":false,"boxType":"box7","properties":{"name":""},"id":9,"x":1301,"y":239},"10":{"title":"Read","inputs":0,"outputs":1,"draggable":false,"boxType":"box1","properties":{"name":""},"id":10,"x":128,"y":22},"11":{"title":"Merge","inputs":2,"outputs":1,"draggable":false,"boxType":"box2","properties":{"leftKey":"","rightKey":"","mergeMethod":""},"id":11,"x":562,"y":11},"12":{"title":"Read","inputs":0,"outputs":1,"draggable":false,"boxType":"box1","properties":{"name":""},"id":12,"x":874,"y":12}},"edges":{"3":{"sourceId":"3","targetId":"4","drawn":true},"4":{"sourceId":"4","targetId":"5","drawn":true},"7":{"sourceId":"7","targetId":"8","drawn":true},"8":{"sourceId":"8","targetId":"9","drawn":true},"10":{"sourceId":"10","targetId":"11","drawn":true},"12":{"sourceId":"12","targetId":"8","drawn":true}},"nodeId":13}';
       let graphData = JSON.parse(graphString);
-      this.$store.commit("updateNodeId", 1);
+      this.$store.commit("updateNodeId", graphData.nodeId);
       for (let [id, node] of Object.entries(graphData.nodes)) {
         this.$store.commit("addNode", node);
       }
@@ -47,12 +46,12 @@ export default {
       }
       let graphData = JSON.parse(JSON.stringify(this.$store.state.graph));
       Object.values(graphData.nodes).forEach(n => (n.draggable = false));
+      graphData['nodeId'] = this.$store.getters.nodeId
 
       console.log(JSON.stringify(graphData));
     },
     addRead: function(event) {
       let node = {
-        id: this.$store.getters.getNodeId,
         title: "Read",
         inputs: 0,
         outputs: 1,
@@ -66,7 +65,6 @@ export default {
     },
     addMerge: function(event) {
       let node = {
-        id: this.$store.getters.getNodeId,
         title: "Merge",
         inputs: 2,
         outputs: 1,
@@ -82,7 +80,6 @@ export default {
     },
     addWrite: function(event) {
       let node = {
-        id: this.$store.getters.getNodeId,
         title: "Write",
         inputs: 1,
         outputs: 0,

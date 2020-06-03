@@ -24,7 +24,7 @@ export default new Vuex.Store({
     allUsers(state) {
       return state.users;
     },
-    getNodeId(state) {
+    nodeId(state) {
       return state.nodeId;
     }
   },
@@ -44,10 +44,16 @@ export default new Vuex.Store({
       state.nodeId = id;
     },
     addNode(state, node) {
-      Vue.set(state.graph.nodes, state.nodeId++, node);
+      if (typeof node.id === "undefined") {
+        node.id = state.nodeId++;
+      }
+      Vue.set(state.graph.nodes, node.id, node);
     },
     removeNode(state, id) {
       Vue.delete(state.graph.nodes, id);
+    },
+    setDraggable(state, id) {
+      Vue.set(state.graph.nodes[id], "draggable", true);
     },
     addEdge(state, payload) {
       Vue.set(state.graph.edges, payload.sourceId, {

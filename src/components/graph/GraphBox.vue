@@ -67,14 +67,9 @@ export default {
         vm.plumb.setContainer(document.querySelector(".graph"));
         for (let [id, node] of Object.entries(vm.$store.state.graph.nodes)) {
           let element = document.getElementById(id);
-          element.style.left = node.x + "px";
-          delete node.x;
-          element.style.top = node.y + "px";
-          delete node.y;
-          vm.plumb.revalidate(element);
           if (!node.draggable) {
             vm.plumb.draggable(element);
-            node.draggable = true;
+            vm.$store.commit('setDraggable', node.id)
             if (node.outputs > 0) {
               let endpoint = vm.plumb.addEndpoint(element, {
                 isSource: true,
@@ -90,6 +85,11 @@ export default {
               });
             }
           }
+          element.style.left = node.x + "px";
+          delete node.x;
+          element.style.top = node.y + "px";
+          delete node.y;
+          vm.plumb.revalidate(element);
         }
         for (let [sourceId, edge] of Object.entries(
           vm.$store.state.graph.edges
