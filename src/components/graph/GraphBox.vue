@@ -69,7 +69,7 @@ export default {
           let element = document.getElementById(id);
           if (!node.draggable) {
             vm.plumb.draggable(element);
-            vm.$store.commit('setDraggable', node.id)
+            vm.$store.commit("setDraggable", node.id);
             if (node.outputs > 0) {
               let endpoint = vm.plumb.addEndpoint(element, {
                 isSource: true,

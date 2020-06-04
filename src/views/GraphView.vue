@@ -25,9 +25,6 @@ export default {
   margin: 0;
 }
 .container {
-  padding-top: 0;
-  padding-bottom: 0;
-  /* margin: 0; */
   display: flex;
   height: 100%;
 }
